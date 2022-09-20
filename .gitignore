@@ -1,5 +1,17 @@
+*.class
+*.jar
+*.war
+*.ear
+*.ser
+
 .gradle
 /build/
+
+# Ignore Gradle build output directory
+build
+
+.DS_Store
+.vscode
 
 # Ignore Gradle GUI config
 gradle-app.setting
