@@ -19,29 +19,30 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
 
 @SpringBootApplication
-@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
 public class AccountingbookApplication {
 
-	// private static final Logger log = LoggerFactory.getLogger(AccountingbookApplication.class);
+	// private static final Logger log =
+	// LoggerFactory.getLogger(AccountingbookApplication.class);
 
-	@Bean
-	CommandLineRunner initDatabase(AccountRepository accountRepo) {
-		return args -> {
+	// @Bean
+	// CommandLineRunner initDatabase(AccountRepository accountRepo) {
+	// return args -> {
 
-			accountRepo.deleteAll();
-			Account account = new Account();
-			AccountBook book1 = getAccountBook(account, "book1");
-			AccountBook book2 = getAccountBook(account, "book2");
-			account.setAccountBooks(Arrays.asList(book1,book2));
-			SpendingItem item1 = getSpendingItem(book1, "breakfast");
-			SpendingItem item2 = getSpendingItem(book1, "lunch");
-			SpendingItem item3 = getSpendingItem(book1, "dinner");
-			SpendingItem item4 = getSpendingItem(book2, "snacks");
-			book1.setSpendingItems(Arrays.asList(item1, item2, item3));
-			book2.setSpendingItems(Arrays.asList(item4));
-			accountRepo.saveAndFlush(account);
-		};
-	}
+	// accountRepo.deleteAll();
+	// Account account = new Account();
+	// AccountBook book1 = getAccountBook(account, "book1");
+	// AccountBook book2 = getAccountBook(account, "book2");
+	// account.setAccountBooks(Arrays.asList(book1,book2));
+	// SpendingItem item1 = getSpendingItem(book1, "breakfast");
+	// SpendingItem item2 = getSpendingItem(book1, "lunch");
+	// SpendingItem item3 = getSpendingItem(book1, "dinner");
+	// SpendingItem item4 = getSpendingItem(book2, "snacks");
+	// book1.setSpendingItems(Arrays.asList(item1, item2, item3));
+	// book2.setSpendingItems(Arrays.asList(item4));
+	// accountRepo.saveAndFlush(account);
+	// };
+	// }
 
 	public static void main(String[] args) {
 		SpringApplication.run(AccountingbookApplication.class, args);
