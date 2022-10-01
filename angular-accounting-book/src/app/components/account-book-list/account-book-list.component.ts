@@ -10,7 +10,6 @@ import { AccountService } from 'src/app/services/account.service';
 })
 export class AccountBookListComponent implements OnInit {
   accountBooks: AccountBook[] = [];
-
   constructor(
     private accountBookService: AccountBookService,
     private accountService: AccountService

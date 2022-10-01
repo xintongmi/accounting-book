@@ -11,6 +11,9 @@ import { MatCardModule } from '@angular/material/card';
 
 import { MatTableModule } from '@angular/material/table';
 import { AccountService } from './services/account.service';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonModule } from '@angular/material/button';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -19,11 +22,14 @@ import { AccountService } from './services/account.service';
     SpendingItemListComponent,
   ],
   imports: [
+    MatButtonModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    MatCardModule,
     MatTableModule,
+    MatCardModule,
+    MatListModule,
+    BrowserAnimationsModule,
   ],
   providers: [AccountBookService, AccountService],
   bootstrap: [AppComponent],
