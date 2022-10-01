@@ -8,6 +8,7 @@ import { AccountBookListComponent } from './components/account-book-list/account
 import { AccountBookService } from './services/account-book.service';
 import { SpendingItemListComponent } from './components/spending-item-list/spending-item-list.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { MatTableModule } from '@angular/material/table';
 import { AccountService } from './services/account.service';
@@ -30,6 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatCardModule,
     MatListModule,
     BrowserAnimationsModule,
+    MatSidenavModule,
   ],
   providers: [AccountBookService, AccountService],
   bootstrap: [AppComponent],
