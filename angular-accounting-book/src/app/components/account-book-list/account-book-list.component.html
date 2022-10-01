@@ -1,3 +1,12 @@
-<li *ngFor="let accountBook of accountBooks">
-   <a routerLink="/books/{{ accountBook.id }}" routerLinkActive="active-link">{{ accountBook.name }}</a>
-</li>
+<div *ngFor="let accountBook of accountBooks" class="card-container">
+  <mat-card routerLink="/books/{{ accountBook.id }}" class="account-book-card">
+    <mat-card-title>
+      {{ accountBook.name }}
+    </mat-card-title>
+    <mat-card-content class="book-desc"> desc </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="$event.stopPropagation()">DELETE</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

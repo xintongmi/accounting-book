@@ -1,0 +1,20 @@
+:host {
+  height: 100%;
+  display: flex;
+
+  .card-container {
+    height: 240px;
+    width: 160px;
+    margin: 24px;
+
+    .account-book-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+
+      .book-desc {
+        flex-grow: 1;
+      }
+    }
+  }
+}
