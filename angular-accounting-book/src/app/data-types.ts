@@ -1,6 +1,13 @@
 export interface AccountBook {
-  uri: string;
+  id: number;
   name: string;
+}
+
+/** Segments for each entities. */
+export enum ApiEntitySegments {
+  ACCOUNTS = 'accounts',
+  BOOKS = 'accountBooks',
+  ITEMS = 'spendingItems',
 }
 
 export interface SpendingItem {

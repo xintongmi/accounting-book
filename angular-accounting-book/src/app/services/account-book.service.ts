@@ -1,23 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { getAccountUrl } from '../common/utils';
 import { ListAccountBookResponse, ListPage } from '../data-types';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountBookService {
-  private baseUrl = 'http://localhost:8080/api/accountBooks';
-
   constructor(private httpClient: HttpClient) {}
 
-  getAccountBookList(accountUri: string): Observable<ListAccountBookResponse> {
-    return this.httpClient.get<Response>(accountUri + '/accountBooks').pipe(
+  getAccountBookList(accountId: number): Observable<ListAccountBookResponse> {
+    const accountUrl = getAccountUrl(accountId);
+    return this.httpClient.get<Response>(accountUrl).pipe(
       map((response): ListAccountBookResponse => {
         return {
           page: response.page,
           accountBooks: response._embedded.accountBooks.map((rawBook) => ({
-            uri: rawBook._links.self,
+            id: rawBook.id,
             name: rawBook.name,
           })),
         };
@@ -27,10 +27,8 @@ export class AccountBookService {
 }
 
 declare interface RawAccountBook {
+  id: number;
   name: string;
-  _links: {
-    self: string;
-  };
 }
 
 declare interface Response {

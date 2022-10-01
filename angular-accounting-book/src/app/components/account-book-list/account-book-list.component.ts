@@ -17,11 +17,11 @@ export class AccountBookListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.listAccountBooks(this.accountService.getAccountUri());
+    this.listAccountBooks(this.accountService.getAccountId());
   }
 
-  listAccountBooks(accountUri: string) {
-    this.accountBookService.getAccountBookList(accountUri).subscribe((data) => {
+  listAccountBooks(accountId: number) {
+    this.accountBookService.getAccountBookList(accountId).subscribe((data) => {
       this.accountBooks = data.accountBooks;
     });
   }
