@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
 import { ActivatedRoute } from '@angular/router';
 import { SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
@@ -17,6 +18,7 @@ export class SpendingItemListComponent implements OnInit {
     'amount',
   ];
   dataSource: SpendingItem[] = [];
+  pageMode: 'records' | 'report' = 'records';
 
   constructor(
     private spendingItemService: SpendingItemService,
@@ -34,5 +36,14 @@ export class SpendingItemListComponent implements OnInit {
     this.spendingItemService.getSpendingItemList(bookId).subscribe((data) => {
       this.dataSource = data;
     });
+  }
+
+  changeMode(event: MatSelectionListChange) {
+    const selectedOption = event.options[0].value;
+    if (selectedOption === 'records' || selectedOption === 'report') {
+      this.pageMode = selectedOption;
+    } else {
+      throw new Error(`Unsupported page mode: ${selectedOption}`);
+    }
   }
 }
