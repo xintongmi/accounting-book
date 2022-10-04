@@ -21,7 +21,7 @@ export class SpendingItemService {
     )}/${ApiEntitySegments.ITEMS}`;
     return this.getSpendingItem(fullListUrl);
   }
-  filterSpendingItem(
+  filterSpendingItems(
     keyword: string,
     filterBy: string
   ): Observable<SpendingItem[]> {
@@ -31,9 +31,10 @@ export class SpendingItemService {
         ApiEntitySegments.ITEMS
       }/search/findByCategory?category=${keyword}`;
     } else {
+      // filterBy === 'text'
       searchUrl = `${getBackendBaseUrl()}/${
         ApiEntitySegments.ITEMS
-      }/search/findByDescriptionContaining?description=${keyword}`;
+      }/search/findByText?text=${keyword}`;
       console.log(searchUrl);
     }
     return this.getSpendingItem(searchUrl);
