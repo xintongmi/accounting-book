@@ -15,25 +15,7 @@
       <!-- ADD + SEARCH / FILTER BAR -->
       <div class="table-header">
         <button mat-button color="primary">Add</button>
-        <div class="table-filters">
-          <form [formGroup]="filterForm">
-            <mat-form-field appearance="fill">
-              <mat-label>Search... </mat-label>
-              <input matInput formControlName="text" />
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>category</mat-label>
-              <mat-select formControlName="category">
-                <mat-option
-                  *ngFor="let category of categories"
-                  [value]="category"
-                  >{{ category }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-          </form>
-        </div>
+        <app-filter-bar (filterChange)="filter($event)"></app-filter-bar>
       </div>
       <!-- END ADD + SEARCH / FILTER BAR -->
       <mat-divider></mat-divider>

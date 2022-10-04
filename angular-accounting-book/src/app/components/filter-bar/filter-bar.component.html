@@ -1,0 +1,17 @@
+<div class="table-filters">
+  <form [formGroup]="filterForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Search... </mat-label>
+      <input matInput formControlName="text" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of categories" [value]="category">{{
+          category
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</div>
