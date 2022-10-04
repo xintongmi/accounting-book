@@ -1,6 +1,7 @@
 package com.xintongthecoder.accountingbook.entity;
 
 public enum Category {
-    
-    HOUSEHOLD
+
+    GROCERY, HOUSEHOLD, UTILITY, AUTOMOTIVE, CLOTHING, SKINCAREANDCOSMETICS, ENTERTAINMENT, GIFT;
+
 }

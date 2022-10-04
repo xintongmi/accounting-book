@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { getAccountBookUrl } from '../common/utils';
+import { getAccountBookUrl, getBackendBaseUrl } from '../common/utils';
 import { ApiEntitySegments, SpendingItem } from '../data-types';
 import { AccountService } from './account.service';
 
@@ -15,12 +15,32 @@ export class SpendingItemService {
   ) {}
 
   getSpendingItemList(bookId: number): Observable<SpendingItem[]> {
+    const fullListUrl = `${getAccountBookUrl(
+      this.accountService.getAccountId(),
+      bookId
+    )}/${ApiEntitySegments.ITEMS}`;
+    return this.getSpendingItem(fullListUrl);
+  }
+  filterSpendingItem(
+    keyword: string,
+    filterBy: string
+  ): Observable<SpendingItem[]> {
+    let searchUrl = '';
+    if (filterBy === 'category') {
+      searchUrl = `${getBackendBaseUrl()}/${
+        ApiEntitySegments.ITEMS
+      }/search/findByCategory?category=${keyword}`;
+    } else {
+      searchUrl = `${getBackendBaseUrl()}/${
+        ApiEntitySegments.ITEMS
+      }/search/findByDescriptionContaining?description=${keyword}`;
+      console.log(searchUrl);
+    }
+    return this.getSpendingItem(searchUrl);
+  }
+  getSpendingItem(url: string): Observable<SpendingItem[]> {
     return this.httpClient
-      .get<GetResponse>(
-        `${getAccountBookUrl(this.accountService.getAccountId(), bookId)}/${
-          ApiEntitySegments.ITEMS
-        }`
-      )
+      .get<GetResponse>(url)
       .pipe(map((response) => response._embedded.spendingItems));
   }
 }

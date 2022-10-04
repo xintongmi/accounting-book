@@ -30,3 +30,10 @@ export interface ListAccountBookResponse {
   page: ListPage;
   accountBooks: AccountBook[];
 }
+
+export enum Category {
+  HouseHold = 'HOUSEHOLD',
+  Grocery = 'GROCERY',
+  Utilities = 'UTILITY',
+  Entertainment = 'ENTERTAINMENT',
+}

@@ -1,8 +1,10 @@
 package com.xintongthecoder.accountingbook.entity;
 
 import java.util.Date;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -16,20 +18,21 @@ import lombok.Setter;
 
 
 @Entity
-@Table(name="spending_item")
+@Table(name = "spending_item")
 @Getter
 @Setter
 public class SpendingItem {
-    
+
     private @Id @GeneratedValue Long id;
+    @Enumerated(EnumType.STRING)
     private Category category;
     private String description;
     private String merchant;
     private @Temporal(TemporalType.DATE) Date date;
     private float amount;
-    
+
     @ManyToOne
     @JoinColumn(name = "account_book_Id", nullable = false)
     private AccountBook book;
-   
+
 }

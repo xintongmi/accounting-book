@@ -5,7 +5,17 @@
     width: 400px;
   }
 
-  table {
-    width: 80%;
+  .items-section {
+    display: flex;
+    flex-direction: column;
+
+    .table-header {
+      display: flex;
+      padding: 8px;
+    }
+
+    .spending-item-table {
+      margin: 24px;
+    }
   }
 }
