@@ -1,4 +1,5 @@
 <mat-drawer-container class="page-container">
+  <!-- SIDE MENU -->
   <mat-drawer mode="side" opened class="side-menu">
     <mat-selection-list
       [multiple]="false"
@@ -8,48 +9,80 @@
       <mat-list-option [value]="'report'">Report</mat-list-option>
     </mat-selection-list>
   </mat-drawer>
+  <!-- END SIDE MENU -->
   <mat-drawer-content>
-    <table
-      *ngIf="pageMode === 'records'"
-      mat-table
-      [dataSource]="dataSource"
-      class="mat-elevation-z8"
-    >
-      <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef>Date</th>
-        <td mat-cell *matCellDef="let spendingItem">{{ spendingItem.date }}</td>
-      </ng-container>
+    <section class="items-section">
+      <!-- ADD + SEARCH / FILTER BAR -->
+      <div class="table-header">
+        <button mat-button color="primary">Add</button>
+        <div class="table-filters">
+          <form [formGroup]="filterForm">
+            <mat-form-field appearance="fill">
+              <mat-label>Search... </mat-label>
+              <input matInput formControlName="text" />
+            </mat-form-field>
 
-      <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef>Category</th>
-        <td mat-cell *matCellDef="let spendingItem">
-          {{ spendingItem.category }}
-        </td>
-      </ng-container>
+            <mat-form-field appearance="fill">
+              <mat-label>category</mat-label>
+              <mat-select formControlName="category">
+                <mat-option
+                  *ngFor="let category of categories"
+                  [value]="category"
+                  >{{ category }}</mat-option
+                >
+              </mat-select>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+      <!-- END ADD + SEARCH / FILTER BAR -->
+      <mat-divider></mat-divider>
+      <!-- ITEM LIST -->
+      <table
+        *ngIf="pageMode === 'records'"
+        mat-table
+        [dataSource]="dataSource"
+        class="spending-item-table mat-elevation-z8"
+      >
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let spendingItem">
+            {{ spendingItem.date }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>Description</th>
-        <td mat-cell *matCellDef="let spendingItem">
-          {{ spendingItem.description }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef>Category</th>
+          <td mat-cell *matCellDef="let spendingItem">
+            {{ spendingItem.category }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="merchant">
-        <th mat-header-cell *matHeaderCellDef>Merchant</th>
-        <td mat-cell *matCellDef="let spendingItem">
-          {{ spendingItem.merchant }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let spendingItem">
+            {{ spendingItem.description }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="amount">
-        <th mat-header-cell *matHeaderCellDef>Amount</th>
-        <td mat-cell *matCellDef="let spendingItem">
-          {{ spendingItem.amount }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="merchant">
+          <th mat-header-cell *matHeaderCellDef>Merchant</th>
+          <td mat-cell *matCellDef="let spendingItem">
+            {{ spendingItem.merchant }}
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>Amount</th>
+          <td mat-cell *matCellDef="let spendingItem">
+            {{ spendingItem.amount }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+      <!--END ITEM LIST -->
+    </section>
   </mat-drawer-content>
 </mat-drawer-container>
