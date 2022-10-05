@@ -24,6 +24,7 @@ export interface ListPage {
   size: number;
   totalElements: number;
   totalPages: number;
+  number: number;
 }
 
 export interface ListAccountBookResponse {
@@ -32,6 +33,7 @@ export interface ListAccountBookResponse {
 }
 
 export enum Category {
+  All = 'ALL',
   HouseHold = 'HOUSEHOLD',
   Grocery = 'GROCERY',
   Utilities = 'UTILITY',
