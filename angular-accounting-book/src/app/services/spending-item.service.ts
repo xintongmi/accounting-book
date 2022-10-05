@@ -1,8 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { getAccountBookUrl, getBackendBaseUrl } from '../common/utils';
-import { ApiEntitySegments, SpendingItem } from '../data-types';
+import {
+  ApiEntitySegments,
+  Category,
+  ListPage,
+  SpendingItem,
+} from '../data-types';
 import { AccountService } from './account.service';
 
 @Injectable({
@@ -14,35 +19,36 @@ export class SpendingItemService {
     private readonly accountService: AccountService
   ) {}
 
-  getSpendingItemList(bookId: number): Observable<SpendingItem[]> {
+  getSpendingItemList(
+    pageIndex: number,
+    pageSize: number,
+    bookId: number
+  ): Observable<GetResponse> {
     const fullListUrl = `${getAccountBookUrl(
       this.accountService.getAccountId(),
       bookId
-    )}/${ApiEntitySegments.ITEMS}`;
-    return this.getSpendingItem(fullListUrl);
+    )}/${ApiEntitySegments.ITEMS}?page=${pageIndex}&size=${pageSize}`;
+    return this.httpClient.get<GetResponse>(fullListUrl);
   }
+
   filterSpendingItems(
-    keyword: string,
+    pageIndex: number,
+    pageSize: number,
+    keyword: Category,
     filterBy: string
-  ): Observable<SpendingItem[]> {
+  ): Observable<GetResponse> {
     let searchUrl = '';
     if (filterBy === 'category') {
       searchUrl = `${getBackendBaseUrl()}/${
         ApiEntitySegments.ITEMS
-      }/search/findByCategory?category=${keyword}`;
+      }/search/findByCategory?category=${keyword}&page=${pageIndex}&size=${pageSize}`;
     } else {
       // filterBy === 'text'
       searchUrl = `${getBackendBaseUrl()}/${
         ApiEntitySegments.ITEMS
-      }/search/findByText?text=${keyword}`;
-      console.log(searchUrl);
+      }/search/findByText?text=${keyword}&page=${pageIndex}&size=${pageSize}`;
     }
-    return this.getSpendingItem(searchUrl);
-  }
-  getSpendingItem(url: string): Observable<SpendingItem[]> {
-    return this.httpClient
-      .get<GetResponse>(url)
-      .pipe(map((response) => response._embedded.spendingItems));
+    return this.httpClient.get<GetResponse>(searchUrl);
   }
 }
 
@@ -54,4 +60,5 @@ declare interface GetResponse {
   _embedded: {
     spendingItems: SpendingItem[];
   };
+  page: ListPage;
 }

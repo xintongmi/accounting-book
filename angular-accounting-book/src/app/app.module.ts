@@ -23,6 +23,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FilterBarComponent } from './components/filter-bar/filter-bar.component';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { FilterBarComponent } from './components/filter-bar/filter-bar.component
     MatDividerModule,
     MatSelectModule,
     FormsModule,
+    MatPaginatorModule,
   ],
   providers: [AccountBookService, AccountService],
   bootstrap: [AppComponent],

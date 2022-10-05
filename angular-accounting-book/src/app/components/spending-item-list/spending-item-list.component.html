@@ -15,11 +15,23 @@
       <!-- ADD + SEARCH / FILTER BAR -->
       <div class="table-header">
         <button mat-button color="primary">Add</button>
-        <app-filter-bar (filterChange)="filter($event)"></app-filter-bar>
+        <app-filter-bar
+          (filterChange)="refreshTableOnFilterChange($event)"
+        ></app-filter-bar>
       </div>
       <!-- END ADD + SEARCH / FILTER BAR -->
       <mat-divider></mat-divider>
       <!-- ITEM LIST -->
+      <!-- PAGINATION -->
+      <mat-paginator
+        [pageIndex]="pageIndex"
+        [length]="length"
+        [pageSize]="pageSize"
+        [pageSizeOptions]="[2, 10, 20, 50, 100]"
+        (page)="refreshTableOnPageChange($event)"
+        aria-label="Select page"
+      ></mat-paginator>
+      <!-- END PAGINATION -->
       <table
         *ngIf="pageMode === 'records'"
         mat-table
