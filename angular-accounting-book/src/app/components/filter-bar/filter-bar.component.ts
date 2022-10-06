@@ -27,7 +27,7 @@ export class FilterBarComponent implements OnDestroy {
   @Output()
   readonly filterChange = new EventEmitter<FilterChange>();
 
-  constructor(formBuilder: FormBuilder) {
+  constructor(private formBuilder: FormBuilder) {
     this.filterForm = formBuilder.group({
       text: [],
       category: [],

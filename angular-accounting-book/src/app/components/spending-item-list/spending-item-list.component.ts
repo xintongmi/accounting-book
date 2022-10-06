@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
+import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
 import { FilterChange } from '../filter-bar/filter-bar.component';
 
 @Component({
@@ -30,9 +32,16 @@ export class SpendingItemListComponent implements OnInit {
   category = Category.All;
   filterText = '';
 
+  newItemDate?: Date;
+  newItemCategory? = Category;
+  newItemDescription = '';
+  newItemMerchant = '';
+  newItemAmount?: number;
+
   constructor(
     private spendingItemService: SpendingItemService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    public dialog: MatDialog
   ) {
     route.paramMap.subscribe((map) => {
       this.bookId = parseInt(map.get('id')!);
@@ -93,5 +102,18 @@ export class SpendingItemListComponent implements OnInit {
       this.dataSource = data._embedded.spendingItems;
       this.length = data.page.totalElements;
     };
+  }
+
+  openItemDialog(item?: SpendingItem) {
+    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+      width: '400px',
+      height: '500px',
+      data: {
+        item,
+      },
+    });
+    dialogRef.afterClosed().subscribe((newItem) => {
+      // this.xxx = newItem;
+    });
   }
 }
