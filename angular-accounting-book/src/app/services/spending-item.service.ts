@@ -1,8 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { getAccountBookUrl, getBackendBaseUrl } from '../common/utils';
 import {
+  getAccountBookUrl,
+  getAccountUrl,
+  getBackendBaseUrl,
+} from '../common/utils';
+import {
+  AccountBook,
   ApiEntitySegments,
   Category,
   ListPage,
@@ -49,6 +54,11 @@ export class SpendingItemService {
       }/search/findByText?text=${keyword}&page=${pageIndex}&size=${pageSize}`;
     }
     return this.httpClient.get<GetResponse>(searchUrl);
+  }
+
+  addItem(item: SpendingItem): Observable<any> {
+    const addItemUrl = `${getBackendBaseUrl()}/addItem`;
+    return this.httpClient.post<SpendingItem>(addItemUrl, item);
   }
 }
 

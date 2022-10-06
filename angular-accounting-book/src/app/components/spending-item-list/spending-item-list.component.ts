@@ -113,7 +113,8 @@ export class SpendingItemListComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((newItem) => {
-      // this.xxx = newItem;
+      newItem.bookId = this.bookId;
+      this.spendingItemService.addItem(newItem);
     });
   }
 }

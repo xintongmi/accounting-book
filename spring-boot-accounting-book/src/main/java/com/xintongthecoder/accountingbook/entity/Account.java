@@ -1,7 +1,6 @@
 package com.xintongthecoder.accountingbook.entity;
 
-import java.util.List;
-
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,15 +13,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name="account")
+@Table(name = "account")
 @Setter
 @Getter
 public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    private List<AccountBook> accountBooks;
+    private Set<AccountBook> accountBooks;
 
 }
