@@ -6,8 +6,8 @@ export interface AccountBook {
 /** Segments for each entities. */
 export enum ApiEntitySegments {
   ACCOUNTS = 'accounts',
-  BOOKS = 'accountBooks',
-  ITEMS = 'spendingItems',
+  BOOKS = 'books',
+  ITEMS = 'items',
 }
 
 export interface SpendingItem {
@@ -28,8 +28,13 @@ export interface ListPage {
 }
 
 export interface ListAccountBookResponse {
-  page: ListPage;
+  // page: ListPage;
   accountBooks: AccountBook[];
+}
+
+export interface ListSpendingItemResponse {
+  // page: ListPage;
+  spendingItems: SpendingItem[];
 }
 
 export enum Category {

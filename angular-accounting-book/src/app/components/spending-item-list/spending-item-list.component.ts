@@ -90,8 +90,8 @@ export class SpendingItemListComponent implements OnInit {
 
   processResponse() {
     return (data: any) => {
-      this.dataSource = data._embedded.spendingItems;
-      this.length = data.page.totalElements;
+      this.dataSource = data._embedded.items;
+      // this.length = data.page.totalElements;
     };
   }
 }

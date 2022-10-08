@@ -1,11 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { getAccountBookUrl, getBackendBaseUrl } from '../common/utils';
+import { map, Observable } from 'rxjs';
+import { getBackendBaseUrl } from '../common/utils';
 import {
   ApiEntitySegments,
   Category,
   ListPage,
+  ListSpendingItemResponse,
   SpendingItem,
 } from '../data-types';
 import { AccountService } from './account.service';
@@ -24,41 +25,53 @@ export class SpendingItemService {
     pageSize: number,
     bookId: number
   ): Observable<GetResponse> {
-    const fullListUrl = `${getAccountBookUrl(
-      this.accountService.getAccountId(),
-      bookId
-    )}/${ApiEntitySegments.ITEMS}?page=${pageIndex}&size=${pageSize}`;
+    const fullListUrl = `${getBackendBaseUrl()}/${
+      ApiEntitySegments.BOOKS
+    }/${bookId}/${ApiEntitySegments.ITEMS}`;
     return this.httpClient.get<GetResponse>(fullListUrl);
   }
 
   filterSpendingItems(
     pageIndex: number,
     pageSize: number,
-    keyword: Category,
-    filterBy: string
-  ): Observable<GetResponse> {
+    category: Category,
+    filterText: string
+  ): Observable<ListSpendingItemResponse> {
     let searchUrl = '';
-    if (filterBy === 'category') {
+    const params = [];
+    if (category !== Category.All) {
+      params.push(`category=${category}`);
+    }
+    if (filterText) {
+      params.push(`filter=${filterText}`);
+    }
+    params.push(`page=${pageIndex}`);
+    params.push(`size=${pageSize}`);
+    // TODO
+    const suffix = params.join('&');
+    if (filterText === 'category') {
       searchUrl = `${getBackendBaseUrl()}/${
         ApiEntitySegments.ITEMS
-      }/search/findByCategory?category=${keyword}&page=${pageIndex}&size=${pageSize}`;
+      }/search/findByCategory?category=${category}&page=${pageIndex}&size=${pageSize}`;
     } else {
       // filterBy === 'text'
       searchUrl = `${getBackendBaseUrl()}/${
         ApiEntitySegments.ITEMS
-      }/search/findByText?text=${keyword}&page=${pageIndex}&size=${pageSize}`;
+      }/search/findByText?text=${category}&page=${pageIndex}&size=${pageSize}`;
     }
-    return this.httpClient.get<GetResponse>(searchUrl);
+    return this.httpClient.get<GetResponse>(searchUrl).pipe(
+      map((resp) => {
+        return {
+          spendingItems: resp._embedded.items,
+        };
+      })
+    );
   }
-}
-
-declare interface RawSpendingItem {
-  id: number;
 }
 
 declare interface GetResponse {
   _embedded: {
-    spendingItems: SpendingItem[];
+    items: SpendingItem[];
   };
   page: ListPage;
 }

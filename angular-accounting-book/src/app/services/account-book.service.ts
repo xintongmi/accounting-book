@@ -1,8 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { getAccountUrl } from '../common/utils';
-import { ListAccountBookResponse, ListPage } from '../data-types';
+import { getBackendBaseUrl } from '../common/utils';
+import {
+  ApiEntitySegments,
+  ListAccountBookResponse,
+  ListPage,
+} from '../data-types';
 
 @Injectable({
   providedIn: 'root',
@@ -10,13 +14,13 @@ import { ListAccountBookResponse, ListPage } from '../data-types';
 export class AccountBookService {
   constructor(private httpClient: HttpClient) {}
 
-  getAccountBookList(accountId: number): Observable<ListAccountBookResponse> {
-    const accountUrl = getAccountUrl(accountId);
-    return this.httpClient.get<Response>(accountUrl).pipe(
+  getAccountBookList(): Observable<ListAccountBookResponse> {
+    const booksUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}`;
+    return this.httpClient.get<Response>(booksUrl).pipe(
       map((response): ListAccountBookResponse => {
         return {
-          page: response.page,
-          accountBooks: response._embedded.accountBooks.map((rawBook) => ({
+          // page: response.page,
+          accountBooks: response._embedded.books.map((rawBook) => ({
             id: rawBook.id,
             name: rawBook.name,
           })),
@@ -32,8 +36,8 @@ declare interface RawAccountBook {
 }
 
 declare interface Response {
-  page: ListPage;
+  // page: ListPage;
   _embedded: {
-    accountBooks: RawAccountBook[];
+    books: RawAccountBook[];
   };
 }
