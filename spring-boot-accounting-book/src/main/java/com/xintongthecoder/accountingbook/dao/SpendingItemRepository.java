@@ -1,6 +1,5 @@
 package com.xintongthecoder.accountingbook.dao;
 
-import javax.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +14,11 @@ public interface SpendingItemRepository extends JpaRepository<SpendingItem, Long
     // + "or item.merchant like concat('%', :item.description, '%')")
     // Page<SpendingItem> findByText(SpendingItem item, Pageable pageable);
 
+    Page<SpendingItem> findById(Long id, Pageable pageable);
+
+    Page<SpendingItem> findAllByBookId(Long bookId, Pageable pageable);
+
+    Page<SpendingItem> findAll(Pageable pageable);
 
     Page<SpendingItem> findByCategory(@Param("category") Category category, Pageable pageable);
 
