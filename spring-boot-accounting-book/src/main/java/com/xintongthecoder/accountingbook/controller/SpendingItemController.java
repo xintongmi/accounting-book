@@ -1,10 +1,12 @@
 package com.xintongthecoder.accountingbook.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
-import com.xintongthecoder.accountingbook.errorHandler.SpendingItemNotFoundException;
-import com.xintongthecoder.accountingbook.service.SpendingItemService;
+import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
 
 
 @CrossOrigin("http://localhost:4200")
@@ -22,44 +23,37 @@ import com.xintongthecoder.accountingbook.service.SpendingItemService;
 @RequestMapping("api")
 public class SpendingItemController {
 
-        // private final SpendingItemService spendingItemService;
         private final SpendingItemRepository spendingItemRepository;
-        private final AccountBookRepository accountBookRepository;
+        private final SpendingItemModelAssembler spendingItemModelAssembler;
+        private final PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler;
 
-        public SpendingItemController(SpendingItemService spendingItemService,
-                        SpendingItemRepository spendingItemRepository,
-                        AccountBookRepository accountBookRepository) {
-                // this.spendingItemService = spendingItemService;
+        public SpendingItemController(SpendingItemRepository spendingItemRepository,
+                        AccountBookRepository accountBookRepository,
+                        SpendingItemModelAssembler spendingItemModelAssembler,
+                        PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler) {
                 this.spendingItemRepository = spendingItemRepository;
-                this.accountBookRepository = accountBookRepository;
+                this.spendingItemModelAssembler = spendingItemModelAssembler;
+                this.pagedResourcesAssembler = pagedResourcesAssembler;
         }
 
-        @GetMapping("/books/{bookId}/items/{id}")
-        public EntityModel<SpendingItem> one(@PathVariable(value = "bookId") Long bookId,
-                        @PathVariable(value = "id") Long id) {
-                SpendingItem item = spendingItemRepository.findById(id)
-                                .orElseThrow(() -> new SpendingItemNotFoundException(id));
-                return EntityModel.of(item,
-                                linkTo(methodOn(SpendingItemController.class).one(bookId, id))
-                                                .withSelfRel(),
-                                linkTo(methodOn(SpendingItemController.class).all(bookId))
-                                                .withRel("items"));
+        @GetMapping(value = "/books/{bookId}/items/{itemId}", produces = {"application/hal+json"})
+        public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> one(
+                        @PathVariable(value = "bookId") Long bookId,
+                        @PathVariable(value = "itemId") Long itemId) {
+                Page<SpendingItem> pagedItem =
+                                spendingItemRepository.findById(itemId, PageRequest.of(0, 1));
+                return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
+                                .body(pagedResourcesAssembler.toModel(pagedItem,
+                                                spendingItemModelAssembler));
         }
 
-        @GetMapping("/books/{bookId}/items")
-        public CollectionModel<EntityModel<SpendingItem>> all(@PathVariable Long bookId) {
-                List<EntityModel<SpendingItem>> items = accountBookRepository
-                                .getReferenceById(bookId).getSpendingItems().stream()
-                                .map((SpendingItem item) -> EntityModel.of(item,
-                                                linkTo(methodOn(SpendingItemController.class)
-                                                                .one(bookId, item.getId()))
-                                                                                .withSelfRel(),
-                                                linkTo(methodOn(SpendingItemController.class)
-                                                                .all(bookId)).withRel("items")))
-                                .collect(Collectors.toList());
-                return CollectionModel.of(items,
-                                linkTo(methodOn(SpendingItemController.class).all(bookId))
-                                                .withSelfRel());
+        @GetMapping(value = "/books/{bookId}/items", produces = {"application/hal+json"})
+        public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> all(
+                        @PathVariable Long bookId) {
+                Page<SpendingItem> pagedItems = spendingItemRepository.findAllByBookId(bookId,
+                                PageRequest.of(0, 2));
+                return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
+                                .body(pagedResourcesAssembler.toModel(pagedItems,
+                                                spendingItemModelAssembler));
         }
-
 }
