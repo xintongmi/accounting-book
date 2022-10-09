@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
@@ -35,17 +36,22 @@ public class AccountBookController {
         }
 
         @GetMapping(value = "/{id}", produces = {"application/hal+json"})
-        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> one(@PathVariable Long id) {
+        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> one(@PathVariable Long id,
+                        @RequestParam(value = "page", defaultValue = "0") int page,
+                        @RequestParam(value = "size", defaultValue = "10") int size) {
                 Page<AccountBook> pagedBook =
-                                accountBookRepository.findById(id, PageRequest.of(0, 1));
+                                accountBookRepository.findById(id, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedBook,
                                                 accountBookModelAssembler));
         }
 
         @GetMapping(value = "", produces = {"application/hal+json"})
-        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> all() {
-                Page<AccountBook> pagedBooks = accountBookRepository.findAll(PageRequest.of(0, 1));
+        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> all(
+                        @RequestParam(value = "page", defaultValue = "0") int page,
+                        @RequestParam(value = "size", defaultValue = "10") int size) {
+                Page<AccountBook> pagedBooks =
+                                accountBookRepository.findAll(PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedBooks,
                                                 accountBookModelAssembler));
