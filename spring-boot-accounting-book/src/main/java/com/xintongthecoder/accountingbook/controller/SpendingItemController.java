@@ -1,5 +1,6 @@
 package com.xintongthecoder.accountingbook.controller;
 
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
@@ -39,19 +41,22 @@ public class SpendingItemController {
         @GetMapping(value = "/books/{bookId}/items/{itemId}", produces = {"application/hal+json"})
         public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> one(
                         @PathVariable(value = "bookId") Long bookId,
-                        @PathVariable(value = "itemId") Long itemId) {
+                        @PathVariable(value = "itemId") Long itemId,
+                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
                 Page<SpendingItem> pagedItem =
-                                spendingItemRepository.findById(itemId, PageRequest.of(0, 1));
+                                spendingItemRepository.findById(itemId, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedItem,
                                                 spendingItemModelAssembler));
         }
 
         @GetMapping(value = "/books/{bookId}/items", produces = {"application/hal+json"})
-        public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> all(
-                        @PathVariable Long bookId) {
+        public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> all(@PathVariable Long bookId,
+                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
                 Page<SpendingItem> pagedItems = spendingItemRepository.findAllByBookId(bookId,
-                                PageRequest.of(0, 2));
+                                PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedItems,
                                                 spendingItemModelAssembler));
