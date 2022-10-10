@@ -27,8 +27,8 @@ export class SpendingItemListComponent implements OnInit {
   pageIndex = 0;
   pageSize = 10;
   length = 0;
-  category = Category.All;
-  filterText = '';
+  category = Category.ALL;
+  text = '';
 
   constructor(
     private spendingItemService: SpendingItemService,
@@ -56,7 +56,7 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTableOnFilterChange(filterChange: FilterChange) {
-    this.filterText = filterChange.text;
+    this.text = filterChange.text;
     this.category = filterChange.category;
     this.pageIndex = 0;
 
@@ -71,26 +71,20 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTable() {
-    if (this.category === Category.All) {
-      this.spendingItemService
-        .getSpendingItemList(this.pageIndex, this.pageSize, this.bookId)
-        .pipe(first())
-        .subscribe(this.processResponse());
-    } else {
-      this.spendingItemService
-        .filterSpendingItems(
-          this.pageIndex,
-          this.pageSize,
-          this.category,
-          'category'
-        )
-        .subscribe(this.processResponse());
-    }
+    this.spendingItemService
+      .getSpendingItemList(
+        this.bookId,
+        this.pageIndex,
+        this.pageSize,
+        this.category,
+        this.text
+      )
+      .subscribe(this.processResponse());
   }
 
   processResponse() {
     return (data: any) => {
-      this.dataSource = data._embedded.items;
+      this.dataSource = data.spendingItems;
       // this.length = data.page.totalElements
     };
   }

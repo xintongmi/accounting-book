@@ -19,7 +19,7 @@ export class AccountBookService {
     return this.httpClient.get<Response>(booksUrl).pipe(
       map((response): ListAccountBookResponse => {
         return {
-          // page: response.page,
+          page: response.page,
           accountBooks: response._embedded.books.map((rawBook) => ({
             id: rawBook.id,
             name: rawBook.name,
@@ -36,7 +36,7 @@ declare interface RawAccountBook {
 }
 
 declare interface Response {
-  // page: ListPage;
+  page: ListPage;
   _embedded: {
     books: RawAccountBook[];
   };

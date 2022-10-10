@@ -20,49 +20,55 @@ export class SpendingItemService {
     private readonly accountService: AccountService
   ) {}
 
-  getSpendingItemList(
-    pageIndex: number,
-    pageSize: number,
-    bookId: number
-  ): Observable<GetResponse> {
-    const fullListUrl = `${getBackendBaseUrl()}/${
-      ApiEntitySegments.BOOKS
-    }/${bookId}/${ApiEntitySegments.ITEMS}`;
-    return this.httpClient.get<GetResponse>(fullListUrl);
-  }
+  // getSpendingItemList(
+  //   pageIndex: number,
+  //   pageSize: number,
+  //   bookId: number
+  // ): Observable<GetResponse> {
+  //   const fullListUrl = `${getBackendBaseUrl()}/${
+  //     ApiEntitySegments.BOOKS
+  //   }/${bookId}/${ApiEntitySegments.ITEMS}`;
+  //   return this.httpClient.get<GetResponse>(fullListUrl);
+  // }
 
-  filterSpendingItems(
+  getSpendingItemList(
+    bookId: number,
     pageIndex: number,
     pageSize: number,
     category: Category,
-    filterText: string
+    text: string
   ): Observable<ListSpendingItemResponse> {
     let searchUrl = '';
     const params = [];
-    if (category !== Category.All) {
-      params.push(`category=${category}`);
-    }
-    if (filterText) {
-      params.push(`filter=${filterText}`);
-    }
     params.push(`page=${pageIndex}`);
     params.push(`size=${pageSize}`);
+    if (category !== Category.ALL) {
+      params.push(`category=${category}`);
+    }
+    if (text) {
+      params.push(`text=${text}`);
+    }
     // TODO
     const suffix = params.join('&');
-    if (filterText === 'category') {
-      searchUrl = `${getBackendBaseUrl()}/${
-        ApiEntitySegments.ITEMS
-      }/search/findByCategory?category=${category}&page=${pageIndex}&size=${pageSize}`;
-    } else {
-      // filterBy === 'text'
-      searchUrl = `${getBackendBaseUrl()}/${
-        ApiEntitySegments.ITEMS
-      }/search/findByText?text=${category}&page=${pageIndex}&size=${pageSize}`;
-    }
+    searchUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}/${
+      ApiEntitySegments.ITEMS
+    }?${suffix}`;
+
+    // if ( === 'category') {
+    //   searchUrl = `${getBackendBaseUrl()}/${
+    //     ApiEntitySegments.ITEMS
+    //   }/search/findByCategory?category=${category}&page=${pageIndex}&size=${pageSize}`;
+    // } else {
+    //   // filterBy === 'text'
+    //   searchUrl = `${getBackendBaseUrl()}/${
+    //     ApiEntitySegments.ITEMS
+    //   }/search/findByText?text=${category}&page=${pageIndex}&size=${pageSize}`;
+    // }
     return this.httpClient.get<GetResponse>(searchUrl).pipe(
       map((resp) => {
         return {
           spendingItems: resp._embedded.items,
+          page: resp.page,
         };
       })
     );
