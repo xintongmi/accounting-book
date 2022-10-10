@@ -20,17 +20,6 @@ export class SpendingItemService {
     private readonly accountService: AccountService
   ) {}
 
-  // getSpendingItemList(
-  //   pageIndex: number,
-  //   pageSize: number,
-  //   bookId: number
-  // ): Observable<GetResponse> {
-  //   const fullListUrl = `${getBackendBaseUrl()}/${
-  //     ApiEntitySegments.BOOKS
-  //   }/${bookId}/${ApiEntitySegments.ITEMS}`;
-  //   return this.httpClient.get<GetResponse>(fullListUrl);
-  // }
-
   getSpendingItemList(
     bookId: number,
     pageIndex: number,
@@ -54,21 +43,11 @@ export class SpendingItemService {
       ApiEntitySegments.ITEMS
     }?${suffix}`;
 
-    // if ( === 'category') {
-    //   searchUrl = `${getBackendBaseUrl()}/${
-    //     ApiEntitySegments.ITEMS
-    //   }/search/findByCategory?category=${category}&page=${pageIndex}&size=${pageSize}`;
-    // } else {
-    //   // filterBy === 'text'
-    //   searchUrl = `${getBackendBaseUrl()}/${
-    //     ApiEntitySegments.ITEMS
-    //   }/search/findByText?text=${category}&page=${pageIndex}&size=${pageSize}`;
-    // }
     return this.httpClient.get<GetResponse>(searchUrl).pipe(
-      map((resp) => {
+      map((response) => {
         return {
-          spendingItems: resp._embedded.items,
-          page: resp.page,
+          spendingItems: response._embedded?.items ?? [],
+          page: response.page,
         };
       })
     );
@@ -76,7 +55,7 @@ export class SpendingItemService {
 }
 
 declare interface GetResponse {
-  _embedded: {
+  _embedded?: {
     items: SpendingItem[];
   };
   page: ListPage;

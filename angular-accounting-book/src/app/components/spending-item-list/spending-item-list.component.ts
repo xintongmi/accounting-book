@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
 import { FilterChange } from '../filter-bar/filter-bar.component';
@@ -85,7 +84,7 @@ export class SpendingItemListComponent implements OnInit {
   processResponse() {
     return (data: any) => {
       this.dataSource = data.spendingItems;
-      // this.length = data.page.totalElements
+      this.length = data.page.totalElements;
     };
   }
 }
