@@ -12,12 +12,6 @@ export function getBackendBaseUrl() {
   }
 }
 
-export function getAccountUrl(accountId: number): string {
-  return `${getBackendBaseUrl()}/${ApiEntitySegments.ACCOUNTS}/${accountId}/${
-    ApiEntitySegments.BOOKS
-  }`;
-}
-
-export function getAccountBookUrl(accountId: number, bookId: number): string {
+export function getAccountBookUrl(bookId: number): string {
   return `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}`;
 }

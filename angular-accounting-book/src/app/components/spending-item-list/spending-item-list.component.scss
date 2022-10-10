@@ -11,11 +11,16 @@
 
     .table-header {
       display: flex;
+      align-items: center;
       padding: 8px;
     }
 
     .spending-item-table {
       margin: 24px;
     }
+  }
+
+  ::ng-deep .mat-form-field-wrapper {
+    margin-bottom: -1.25em;
   }
 }

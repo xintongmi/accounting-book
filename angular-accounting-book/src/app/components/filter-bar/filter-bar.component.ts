@@ -1,10 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Category } from 'src/app/data-types';
@@ -17,7 +11,7 @@ export interface FilterChange {
 @Component({
   selector: 'app-filter-bar',
   templateUrl: './filter-bar.component.html',
-  styleUrls: ['./filter-bar.component.css'],
+  styleUrls: ['./filter-bar.component.scss'],
 })
 export class FilterBarComponent implements OnDestroy {
   filterForm: FormGroup;
@@ -30,7 +24,7 @@ export class FilterBarComponent implements OnDestroy {
   constructor(private formBuilder: FormBuilder) {
     this.filterForm = formBuilder.group({
       text: [],
-      category: [],
+      category: [Category.ALL],
     });
     this.filterForm.valueChanges
       .pipe(takeUntil(this.destroy))

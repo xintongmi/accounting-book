@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
-import { first } from 'rxjs';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
-import { AddItemDialogComponent } from '../add-item-dialog/add-item-dialog.component';
+import { WriteItemDialogComponent } from '../write-item-dialog/write-item-dialog.component';
 import { FilterChange } from '../filter-bar/filter-bar.component';
 
 @Component({
@@ -29,8 +29,8 @@ export class SpendingItemListComponent implements OnInit {
   pageIndex = 0;
   pageSize = 10;
   length = 0;
-  category = Category.All;
-  filterText = '';
+  category = Category.ALL;
+  text = '';
 
   newItemDate?: Date;
   newItemCategory? = Category;
@@ -41,7 +41,8 @@ export class SpendingItemListComponent implements OnInit {
   constructor(
     private spendingItemService: SpendingItemService,
     route: ActivatedRoute,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
   ) {
     route.paramMap.subscribe((map) => {
       this.bookId = parseInt(map.get('id')!);
@@ -65,7 +66,7 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTableOnFilterChange(filterChange: FilterChange) {
-    this.filterText = filterChange.text;
+    this.text = filterChange.text;
     this.category = filterChange.category;
     this.pageIndex = 0;
 
@@ -80,32 +81,26 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTable() {
-    if (this.category === Category.All) {
-      this.spendingItemService
-        .getSpendingItemList(this.pageIndex, this.pageSize, this.bookId)
-        .pipe(first())
-        .subscribe(this.processResponse());
-    } else {
-      this.spendingItemService
-        .filterSpendingItems(
-          this.pageIndex,
-          this.pageSize,
-          this.category,
-          'category'
-        )
-        .subscribe(this.processResponse());
-    }
+    this.spendingItemService
+      .getSpendingItemList(
+        this.bookId,
+        this.pageIndex,
+        this.pageSize,
+        this.category,
+        this.text
+      )
+      .subscribe(this.processResponse());
   }
 
   processResponse() {
     return (data: any) => {
-      this.dataSource = data._embedded.spendingItems;
+      this.dataSource = data.spendingItems;
       this.length = data.page.totalElements;
     };
   }
 
   openItemDialog(item?: SpendingItem) {
-    const dialogRef = this.dialog.open(AddItemDialogComponent, {
+    const dialogRef = this.dialog.open(WriteItemDialogComponent, {
       width: '400px',
       height: '500px',
       data: {
@@ -114,7 +109,10 @@ export class SpendingItemListComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((newItem) => {
       newItem.bookId = this.bookId;
-      this.spendingItemService.addItem(newItem);
+      this.spendingItemService.WriteItem(newItem).subscribe(() => {
+        this.refreshTable();
+        this.snackBar.open('Item added!');
+      });
     });
   }
 }

@@ -1,16 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { getBackendBaseUrl } from '../common/utils';
 import {
-  getAccountBookUrl,
-  getAccountUrl,
-  getBackendBaseUrl,
-} from '../common/utils';
-import {
-  AccountBook,
   ApiEntitySegments,
   Category,
   ListPage,
+  ListSpendingItemResponse,
   SpendingItem,
 } from '../data-types';
 import { AccountService } from './account.service';
@@ -25,50 +21,48 @@ export class SpendingItemService {
   ) {}
 
   getSpendingItemList(
+    bookId: number,
     pageIndex: number,
     pageSize: number,
-    bookId: number
-  ): Observable<GetResponse> {
-    const fullListUrl = `${getAccountBookUrl(
-      this.accountService.getAccountId(),
-      bookId
-    )}/${ApiEntitySegments.ITEMS}?page=${pageIndex}&size=${pageSize}`;
-    return this.httpClient.get<GetResponse>(fullListUrl);
-  }
-
-  filterSpendingItems(
-    pageIndex: number,
-    pageSize: number,
-    keyword: Category,
-    filterBy: string
-  ): Observable<GetResponse> {
+    category: Category,
+    text: string
+  ): Observable<ListSpendingItemResponse> {
     let searchUrl = '';
-    if (filterBy === 'category') {
-      searchUrl = `${getBackendBaseUrl()}/${
-        ApiEntitySegments.ITEMS
-      }/search/findByCategory?category=${keyword}&page=${pageIndex}&size=${pageSize}`;
-    } else {
-      // filterBy === 'text'
-      searchUrl = `${getBackendBaseUrl()}/${
-        ApiEntitySegments.ITEMS
-      }/search/findByText?text=${keyword}&page=${pageIndex}&size=${pageSize}`;
+    const params = [];
+    params.push(`page=${pageIndex}`);
+    params.push(`size=${pageSize}`);
+    if (category !== Category.ALL) {
+      params.push(`category=${category}`);
     }
-    return this.httpClient.get<GetResponse>(searchUrl);
+    if (text) {
+      params.push(`text=${text}`);
+    }
+    // TODO
+    const suffix = params.join('&');
+    searchUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}/${
+      ApiEntitySegments.ITEMS
+    }?${suffix}`;
+    return this.httpClient.get<GetResponse>(searchUrl).pipe(
+      map((response) => {
+        return {
+          spendingItems: response._embedded?.items ?? [],
+          page: response.page,
+        };
+      })
+    );
   }
 
-  addItem(item: SpendingItem): Observable<any> {
-    const addItemUrl = `${getBackendBaseUrl()}/addItem`;
-    return this.httpClient.post<SpendingItem>(addItemUrl, item);
+  WriteItem(newItem: SpendingItem) {
+    const WriteItemUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
+      newItem.bookId
+    }/${ApiEntitySegments.ITEMS}`;
+    return this.httpClient.post<SpendingItem>(WriteItemUrl, newItem);
   }
-}
-
-declare interface RawSpendingItem {
-  id: number;
 }
 
 declare interface GetResponse {
-  _embedded: {
-    spendingItems: SpendingItem[];
+  _embedded?: {
+    items: SpendingItem[];
   };
   page: ListPage;
 }
