@@ -24,6 +24,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FilterBarComponent } from './components/filter-bar/filter-bar.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { WriteItemDialogComponent } from './components/write-item-dialog/write-item-dialog.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -31,10 +37,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     AccountBookListComponent,
     SpendingItemListComponent,
     FilterBarComponent,
+    WriteItemDialogComponent,
   ],
   imports: [
     MatInputModule,
     MatFormFieldModule,
+    MatIconModule,
     ReactiveFormsModule,
     MatButtonModule,
     BrowserModule,
@@ -49,6 +57,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatSelectModule,
     FormsModule,
     MatPaginatorModule,
+    MatDatepickerModule,
+    MatDialogModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
   ],
   providers: [AccountBookService, AccountService],
   bootstrap: [AppComponent],

@@ -14,7 +14,9 @@
     <section class="items-section">
       <!-- ADD + SEARCH / FILTER BAR -->
       <div class="table-header">
-        <button mat-button color="primary">Add</button>
+        <button mat-mini-fab color="accent" (click)="openItemDialog()">
+          <mat-icon fontIcon="add"></mat-icon>
+        </button>
         <app-filter-bar
           (filterChange)="refreshTableOnFilterChange($event)"
         ></app-filter-bar>

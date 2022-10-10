@@ -17,7 +17,7 @@ export interface SpendingItem {
   merchant: string;
   amount: number;
   date: Date;
-  accoundBookId: number;
+  bookId: number;
 }
 
 export interface ListPage {

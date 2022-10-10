@@ -2,8 +2,6 @@ package com.xintongthecoder.accountingbook.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -15,6 +13,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +25,11 @@ import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
+import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @CrossOrigin("http://localhost:4200")
@@ -34,6 +37,7 @@ import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssemb
 @RequestMapping("api")
 public class SpendingItemController {
 
+    private final AccountBookRepository accountBookRepository;
     private final SpendingItemRepository spendingItemRepository;
     private final SpendingItemModelAssembler spendingItemModelAssembler;
     private final PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler;
@@ -43,6 +47,7 @@ public class SpendingItemController {
             AccountBookRepository accountBookRepository,
             SpendingItemModelAssembler spendingItemModelAssembler,
             PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler) {
+        this.accountBookRepository = accountBookRepository;
         this.spendingItemRepository = spendingItemRepository;
         this.spendingItemModelAssembler = spendingItemModelAssembler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
@@ -93,7 +98,17 @@ public class SpendingItemController {
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));
             }
-
         };
     }
+
+    @PostMapping(value = "/books/{bookId}/items")
+    public ResponseEntity<SpendingItem> addItem(@PathVariable Long bookId,
+            @RequestBody SpendingItem itemRequest) {
+        SpendingItem newItem = this.accountBookRepository.findById(bookId).map(book -> {
+            itemRequest.setBook(book);
+            return this.spendingItemRepository.save(itemRequest);
+        }).orElseThrow(() -> new AccountBookNotFoundException(bookId));
+        return new ResponseEntity<>(newItem, HttpStatus.CREATED);
+    }
+
 }

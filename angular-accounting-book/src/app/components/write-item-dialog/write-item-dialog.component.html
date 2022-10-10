@@ -1,0 +1,43 @@
+<div class="dialog-content">
+  <form [formGroup]="dialogForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Choose a date </mat-label>
+      <input matInput formControlName="date" [matDatepicker]="picker" />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option *ngFor="let category of categories" [value]="category">{{
+          category
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field hintLabel="Max 100 characters" appearance="fill">
+      <mat-label>Description </mat-label>
+      <input matInput #dInput maxLength="100" formControlName="description" />
+      <mat-hint align="end">{{ dInput.value.length || 0 }}/100</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field hintLabel="Max 30 characters" appearance="fill">
+      <mat-label>Merchant </mat-label>
+      <input matInput #mInput maxLength="30" formControlName="merchant" />
+      <mat-hint align="end">{{ mInput.value.length || 0 }}/30</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Amount </mat-label>
+      <input matInput formControlName="amount" />
+      <span matPrefix>$&nbsp;</span>
+    </mat-form-field>
+  </form>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-button (click)="onSave()">Save</button>
+</div>

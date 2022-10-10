@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
+import { WriteItemDialogComponent } from '../write-item-dialog/write-item-dialog.component';
 import { FilterChange } from '../filter-bar/filter-bar.component';
 
 @Component({
@@ -29,9 +32,17 @@ export class SpendingItemListComponent implements OnInit {
   category = Category.ALL;
   text = '';
 
+  newItemDate?: Date;
+  newItemCategory? = Category;
+  newItemDescription = '';
+  newItemMerchant = '';
+  newItemAmount?: number;
+
   constructor(
     private spendingItemService: SpendingItemService,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    public dialog: MatDialog,
+    private readonly snackBar: MatSnackBar
   ) {
     route.paramMap.subscribe((map) => {
       this.bookId = parseInt(map.get('id')!);
@@ -86,5 +97,22 @@ export class SpendingItemListComponent implements OnInit {
       this.dataSource = data.spendingItems;
       this.length = data.page.totalElements;
     };
+  }
+
+  openItemDialog(item?: SpendingItem) {
+    const dialogRef = this.dialog.open(WriteItemDialogComponent, {
+      width: '400px',
+      height: '500px',
+      data: {
+        item,
+      },
+    });
+    dialogRef.afterClosed().subscribe((newItem) => {
+      newItem.bookId = this.bookId;
+      this.spendingItemService.WriteItem(newItem).subscribe(() => {
+        this.refreshTable();
+        this.snackBar.open('Item added!');
+      });
+    });
   }
 }

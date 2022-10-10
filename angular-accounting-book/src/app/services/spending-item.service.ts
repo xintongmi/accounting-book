@@ -42,7 +42,6 @@ export class SpendingItemService {
     searchUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}/${
       ApiEntitySegments.ITEMS
     }?${suffix}`;
-
     return this.httpClient.get<GetResponse>(searchUrl).pipe(
       map((response) => {
         return {
@@ -51,6 +50,13 @@ export class SpendingItemService {
         };
       })
     );
+  }
+
+  WriteItem(newItem: SpendingItem) {
+    const WriteItemUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
+      newItem.bookId
+    }/${ApiEntitySegments.ITEMS}`;
+    return this.httpClient.post<SpendingItem>(WriteItemUrl, newItem);
   }
 }
 

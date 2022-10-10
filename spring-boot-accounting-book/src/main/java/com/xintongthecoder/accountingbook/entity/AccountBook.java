@@ -1,7 +1,7 @@
 package com.xintongthecoder.accountingbook.entity;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -41,5 +41,13 @@ public class AccountBook {
     @JsonIgnore // To ignore the logical property used in serialization and deserialization
     private Account account;
 
-
+    public void addItem(SpendingItem item) {
+        if (item != null) {
+            if (spendingItems.isEmpty()) {
+                spendingItems = new ArrayList<>();
+            }
+            spendingItems.add(item);
+            item.setBook(this);
+        }
+    }
 }
