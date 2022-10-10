@@ -30,7 +30,7 @@ export class FilterBarComponent implements OnDestroy {
   constructor(formBuilder: FormBuilder) {
     this.filterForm = formBuilder.group({
       text: [],
-      category: [],
+      category: [Category.ALL],
     });
     this.filterForm.valueChanges
       .pipe(takeUntil(this.destroy))

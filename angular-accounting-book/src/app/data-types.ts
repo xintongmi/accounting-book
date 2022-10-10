@@ -28,19 +28,19 @@ export interface ListPage {
 }
 
 export interface ListAccountBookResponse {
-  // page: ListPage;
+  page: ListPage;
   accountBooks: AccountBook[];
 }
 
 export interface ListSpendingItemResponse {
-  // page: ListPage;
+  page: ListPage;
   spendingItems: SpendingItem[];
 }
 
 export enum Category {
-  All = 'ALL',
-  HouseHold = 'HOUSEHOLD',
-  Grocery = 'GROCERY',
-  Utilities = 'UTILITY',
-  Entertainment = 'ENTERTAINMENT',
+  ALL = 'ALL',
+  HOUSEHOLD = 'HOUSEHOLD',
+  GROCERY = 'GROCERY',
+  UTILITY = 'UTILITY',
+  ENTERTAINMENT = 'ENTERTAINMENT',
 }
