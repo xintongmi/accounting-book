@@ -35,12 +35,12 @@ public class AccountBookController {
                 this.pagedResourcesAssembler = pagedResourcesAssembler;
         }
 
-        @GetMapping(value = "/{id}", produces = {"application/hal+json"})
-        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> one(@PathVariable Long id,
+        @GetMapping(value = "/{bookId}", produces = {"application/hal+json"})
+        public ResponseEntity<PagedModel<EntityModel<AccountBook>>> one(@PathVariable Long bookId,
                         @RequestParam(value = "page", defaultValue = "0") int page,
                         @RequestParam(value = "size", defaultValue = "10") int size) {
                 Page<AccountBook> pagedBook =
-                                accountBookRepository.findById(id, PageRequest.of(page, size));
+                                accountBookRepository.findById(bookId, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedBook,
                                                 accountBookModelAssembler));

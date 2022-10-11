@@ -1,12 +1,38 @@
-<div *ngFor="let accountBook of accountBooks" class="card-container">
-  <mat-card routerLink="/books/{{ accountBook.id }}" class="account-book-card">
-    <mat-card-title>
-      {{ accountBook.name }}
-    </mat-card-title>
-    <mat-card-content class="book-desc"> desc </mat-card-content>
+<!-- TOP TOOLBAR -->
+<mat-toolbar color="primary">
+  <span>Family Spending Book</span>
+  <span class="toolbar-spacer"></span>
+  <button
+    mat-icon-button
+    class="logout-icon"
+    aria-label="Example icon-button with logout icon"
+  >
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+<!-- END TOP TOOLBAR -->
+<div class="card-container">
+  <div *ngFor="let accountBook of accountBooks">
+    <mat-card
+      routerLink="/books/{{ accountBook.id }}/items"
+      class="account-book-card"
+    >
+      <mat-card-title>
+        {{ accountBook.name }}
+      </mat-card-title>
+      <mat-card-content class="book-desc"> desc </mat-card-content>
 
-    <mat-card-actions align="end">
-      <button mat-button (click)="$event.stopPropagation()">DELETE</button>
-    </mat-card-actions>
-  </mat-card>
+      <mat-card-actions align="end">
+        <button mat-button (click)="$event.stopPropagation()">DELETE</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  <div>
+    <mat-card
+      (click)="createBook()"
+      class="account-book-card account-book-add-card"
+    >
+      <mat-icon class="add-icon">add</mat-icon>
+    </mat-card>
+  </div>
 </div>
