@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
@@ -6,8 +6,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
-import { WriteItemDialogComponent } from '../write-item-dialog/write-item-dialog.component';
 import { FilterChange } from '../filter-bar/filter-bar.component';
+import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dialog.component';
 
 @Component({
   selector: 'app-spending-item-list',
@@ -23,6 +23,7 @@ export class SpendingItemListComponent implements OnInit {
     'description',
     'merchant',
     'amount',
+    'buttons',
   ];
   pageMode: 'records' | 'report' = 'records';
 
@@ -37,6 +38,11 @@ export class SpendingItemListComponent implements OnInit {
   newItemDescription = '';
   newItemMerchant = '';
   newItemAmount?: number;
+
+  @ViewChild('deleteConfirmDialog')
+  deleteConfirmDialog!: TemplateRef<any>;
+
+  pendingDeleteItem?: SpendingItem;
 
   constructor(
     private spendingItemService: SpendingItemService,
@@ -99,8 +105,8 @@ export class SpendingItemListComponent implements OnInit {
     };
   }
 
-  openItemDialog(item?: SpendingItem) {
-    const dialogRef = this.dialog.open(WriteItemDialogComponent, {
+  openEditDialog(item?: SpendingItem) {
+    const dialogRef = this.dialog.open(UpdateItemDialogComponent, {
       width: '400px',
       height: '500px',
       data: {
@@ -108,11 +114,30 @@ export class SpendingItemListComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((newItem) => {
+      if (!newItem) {
+        return;
+      }
       newItem.bookId = this.bookId;
-      this.spendingItemService.WriteItem(newItem).subscribe(() => {
+      this.spendingItemService.updateItem(newItem).subscribe(() => {
         this.refreshTable();
-        this.snackBar.open('Item added!');
+        this.snackBar.open(!item ? 'Item added!' : 'Item updated!');
       });
     });
+  }
+
+  openDeleteDialog(item: SpendingItem) {
+    this.pendingDeleteItem = item;
+    this.dialog.open(this.deleteConfirmDialog);
+  }
+
+  deleteItem() {
+    if (this.pendingDeleteItem) {
+      this.spendingItemService
+        .deleteItem(this.pendingDeleteItem)
+        .subscribe(() => {
+          this.refreshTable();
+          this.snackBar.open('Successfully deleted!');
+        });
+    }
   }
 }
