@@ -24,4 +24,6 @@ export class AccountBookListComponent implements OnInit {
       this.accountBooks = data.accountBooks;
     });
   }
+
+  createBook() {}
 }

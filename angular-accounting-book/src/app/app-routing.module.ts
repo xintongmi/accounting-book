@@ -5,7 +5,7 @@ import { SpendingItemListComponent } from './components/spending-item-list/spend
 
 const routes: Routes = [
   { path: 'books', component: AccountBookListComponent },
-  { path: 'books/:id', component: SpendingItemListComponent },
+  { path: 'books/:id/items', component: SpendingItemListComponent },
   // { path: '', redirectTo: '/books', pathMatch: 'full' },
   // { path: '**', redirectTo: '/books', pathMatch: 'full' },
 ];

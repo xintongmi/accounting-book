@@ -1,19 +1,38 @@
 :host {
   height: 100%;
-  display: flex;
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+  }
 
   .card-container {
-    height: 240px;
-    width: 160px;
-    margin: 24px;
+    background-color: #fafafa;
+    height: 100%;
+    display: flex;
 
     .account-book-card {
-      height: 100%;
+      height: 240px;
+      width: 160px;
       display: flex;
+      background-color: #eeeeee;
       flex-direction: column;
+      margin: 20px;
 
       .book-desc {
         flex-grow: 1;
+      }
+    }
+
+    .account-book-add-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .add-icon {
+        height: 60px;
+        width: 60px;
+        text-align: center;
+        font-size: 36px;
       }
     }
   }

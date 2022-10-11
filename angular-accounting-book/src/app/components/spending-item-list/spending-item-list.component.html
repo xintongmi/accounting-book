@@ -1,3 +1,23 @@
+<!-- TOP TOOLBAR -->
+<mat-toolbar color="primary">
+  <button
+    routerLink="/books"
+    mat-icon-button
+    aria-label="Example icon-button with arrow back icon"
+  >
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>{{ bookName }}</span>
+  <span class="toolbar-spacer"></span>
+  <button
+    mat-icon-button
+    class="logout-icon"
+    aria-label="Example icon-button with logout icon"
+  >
+    <mat-icon>logout</mat-icon>
+  </button>
+</mat-toolbar>
+<!-- END TOP TOOLBAR -->
 <mat-drawer-container class="page-container">
   <!-- SIDE MENU -->
   <mat-drawer mode="side" opened class="side-menu">
@@ -102,6 +122,7 @@
     </section>
   </mat-drawer-content>
 </mat-drawer-container>
+<!-- DELETE COMFIRM DIALOG -->
 <ng-template #deleteConfirmDialog>
   <h3 matDialogTitle>Are you sure you want to permanently delete this item?</h3>
   <mat-dialog-content>
@@ -116,3 +137,4 @@
     </button>
   </mat-dialog-actions>
 </ng-template>
+<!-- END DELETE COMFIRM DIALOG -->

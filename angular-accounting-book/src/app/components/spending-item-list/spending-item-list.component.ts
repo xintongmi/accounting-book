@@ -5,6 +5,7 @@ import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { Category, SpendingItem } from 'src/app/data-types';
+import { AccountBookService } from 'src/app/services/account-book.service';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
 import { FilterChange } from '../filter-bar/filter-bar.component';
 import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dialog.component';
@@ -17,6 +18,7 @@ import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dia
 export class SpendingItemListComponent implements OnInit {
   dataSource: SpendingItem[] = [];
   bookId = 0;
+  bookName = '';
   displayedColumns: String[] = [
     'date',
     'category',
@@ -46,6 +48,7 @@ export class SpendingItemListComponent implements OnInit {
 
   constructor(
     private spendingItemService: SpendingItemService,
+    private accountBookService: AccountBookService,
     route: ActivatedRoute,
     public dialog: MatDialog,
     private readonly snackBar: MatSnackBar
@@ -54,6 +57,11 @@ export class SpendingItemListComponent implements OnInit {
       this.bookId = parseInt(map.get('id')!);
       this.refreshTable();
     });
+    this.accountBookService
+      .getAccountBook(this.bookId)
+      .subscribe((response) => {
+        this.bookName = response.accountBooks[0].name;
+      });
   }
 
   ngOnInit(): void {}
