@@ -14,7 +14,7 @@
     <section class="items-section">
       <!-- ADD + SEARCH / FILTER BAR -->
       <div class="table-header">
-        <button mat-mini-fab color="accent" (click)="openItemDialog()">
+        <button mat-mini-fab color="accent" (click)="openEditDialog()">
           <mat-icon fontIcon="add"></mat-icon>
         </button>
         <app-filter-bar
@@ -75,6 +75,26 @@
           </td>
         </ng-container>
 
+        <ng-container matColumnDef="buttons">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let spendingItem">
+            <button
+              mat-icon-button
+              (click)="openEditDialog(spendingItem)"
+              aria-label="Example edit icon"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              (click)="openDeleteDialog(spendingItem)"
+              aria-label="Example delete icon"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
@@ -82,3 +102,17 @@
     </section>
   </mat-drawer-content>
 </mat-drawer-container>
+<ng-template #deleteConfirmDialog>
+  <h3 matDialogTitle>Are you sure you want to permanently delete this item?</h3>
+  <mat-dialog-content>
+    <p>You won't be able to undo this action and restore this item.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button matDialogClose (click)="pendingDeleteItem = undefined">
+      Cancel
+    </button>
+    <button mat-button matDialogClose color="primary" (click)="deleteItem()">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</ng-template>

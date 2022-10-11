@@ -24,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FilterBarComponent } from './components/filter-bar/filter-bar.component';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { WriteItemDialogComponent } from './components/write-item-dialog/write-item-dialog.component';
+import { UpdateItemDialogComponent } from './components/update-item-dialog/update-item-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -37,7 +37,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     AccountBookListComponent,
     SpendingItemListComponent,
     FilterBarComponent,
-    WriteItemDialogComponent,
+    UpdateItemDialogComponent,
   ],
   imports: [
     MatInputModule,

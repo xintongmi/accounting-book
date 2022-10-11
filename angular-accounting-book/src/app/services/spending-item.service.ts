@@ -52,11 +52,16 @@ export class SpendingItemService {
     );
   }
 
-  WriteItem(newItem: SpendingItem) {
-    const WriteItemUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
+  updateItem(newItem: SpendingItem) {
+    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
       newItem.bookId
     }/${ApiEntitySegments.ITEMS}`;
-    return this.httpClient.post<SpendingItem>(WriteItemUrl, newItem);
+    return this.httpClient.post<SpendingItem>(url, newItem);
+  }
+
+  deleteItem(item: SpendingItem) {
+    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.ITEMS}/${item.id}`;
+    return this.httpClient.delete(url);
   }
 }
 

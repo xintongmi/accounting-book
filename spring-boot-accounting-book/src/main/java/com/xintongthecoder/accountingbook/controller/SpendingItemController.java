@@ -16,6 +16,7 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +27,10 @@ import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
+import com.xintongthecoder.accountingbook.errorHandler.SpendingItemNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -103,12 +106,34 @@ public class SpendingItemController {
 
     @PostMapping(value = "/books/{bookId}/items")
     public ResponseEntity<SpendingItem> addItem(@PathVariable Long bookId,
-            @RequestBody SpendingItem itemRequest) {
+            @RequestBody SpendingItem itemFromRequest) {
         SpendingItem newItem = this.accountBookRepository.findById(bookId).map(book -> {
-            itemRequest.setBook(book);
-            return this.spendingItemRepository.save(itemRequest);
+            itemFromRequest.setBook(book);
+            return this.spendingItemRepository.save(itemFromRequest);
         }).orElseThrow(() -> new AccountBookNotFoundException(bookId));
         return new ResponseEntity<>(newItem, HttpStatus.CREATED);
+    }
+
+    @PutMapping(value = "/items/{itemId}")
+    public ResponseEntity<SpendingItem> editItem(@PathVariable("itemId") Long itemId,
+            @RequestBody SpendingItem itemFromRequest) {
+        try {
+            SpendingItem updatedItem = spendingItemRepository.getReferenceById(itemId);
+            updatedItem.setCategory(itemFromRequest.getCategory());
+            updatedItem.setDescription(itemFromRequest.getDescription());
+            updatedItem.setMerchant(itemFromRequest.getMerchant());
+            updatedItem.setDate(itemFromRequest.getDate());
+            updatedItem.setDate(itemFromRequest.getDate());
+            return new ResponseEntity<>(spendingItemRepository.save(updatedItem), HttpStatus.OK);
+        } catch (SpendingItemNotFoundException ex) {
+            throw new SpendingItemNotFoundException(itemId);
+        }
+    }
+
+    @DeleteMapping(value = "/items/{itemId}")
+    public ResponseEntity<HttpStatus> deleteItem(@PathVariable(value = "itemId") Long itemId) {
+        spendingItemRepository.deleteById(itemId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }
