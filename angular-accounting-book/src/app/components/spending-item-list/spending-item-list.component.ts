@@ -113,27 +113,36 @@ export class SpendingItemListComponent implements OnInit {
     };
   }
 
-  openEditDialog(item?: SpendingItem) {
+  openEditItemDialog(existingItem?: SpendingItem) {
     const dialogRef = this.dialog.open(UpdateItemDialogComponent, {
       width: '400px',
       height: '500px',
       data: {
-        item,
+        item: existingItem,
       },
     });
-    dialogRef.afterClosed().subscribe((newItem) => {
-      if (!newItem) {
+    dialogRef.afterClosed().subscribe((item) => {
+      // If canceled.
+      if (!item) {
         return;
       }
-      newItem.bookId = this.bookId;
-      this.spendingItemService.updateItem(newItem).subscribe(() => {
+      item.bookId = this.bookId;
+      const response$ = existingItem
+        ? this.spendingItemService.updateItem(item)
+        : this.spendingItemService.addItem(item);
+
+      response$.subscribe(() => {
         this.refreshTable();
-        this.snackBar.open(!item ? 'Item added!' : 'Item updated!');
+        this.snackBar.open(
+          existingItem ? 'Item updated!' : 'Item added!',
+          undefined,
+          { duration: 5000 }
+        );
       });
     });
   }
 
-  openDeleteDialog(item: SpendingItem) {
+  openDeleteItemDialog(item: SpendingItem) {
     this.pendingDeleteItem = item;
     this.dialog.open(this.deleteConfirmDialog);
   }
@@ -144,7 +153,9 @@ export class SpendingItemListComponent implements OnInit {
         .deleteItem(this.pendingDeleteItem)
         .subscribe(() => {
           this.refreshTable();
-          this.snackBar.open('Successfully deleted!');
+          this.snackBar.open('Successfully deleted!', undefined, {
+            duration: 5000,
+          });
         });
     }
   }

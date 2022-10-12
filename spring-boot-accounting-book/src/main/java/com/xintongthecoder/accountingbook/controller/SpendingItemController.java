@@ -2,6 +2,7 @@ package com.xintongthecoder.accountingbook.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
+import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
@@ -107,27 +109,24 @@ public class SpendingItemController {
     @PostMapping(value = "/books/{bookId}/items")
     public ResponseEntity<SpendingItem> addItem(@PathVariable Long bookId,
             @RequestBody SpendingItem itemFromRequest) {
-        SpendingItem newItem = this.accountBookRepository.findById(bookId).map(book -> {
-            itemFromRequest.setBook(book);
-            return this.spendingItemRepository.save(itemFromRequest);
-        }).orElseThrow(() -> new AccountBookNotFoundException(bookId));
+        Optional<AccountBook> book = this.accountBookRepository.findById(bookId);
+        if (book.isEmpty()) {
+            throw new AccountBookNotFoundException(bookId);
+        }
+        itemFromRequest.setBook(book.get());
+        SpendingItem newItem = this.spendingItemRepository.save(itemFromRequest);
         return new ResponseEntity<>(newItem, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/items/{itemId}")
     public ResponseEntity<SpendingItem> editItem(@PathVariable("itemId") Long itemId,
             @RequestBody SpendingItem itemFromRequest) {
-        try {
-            SpendingItem updatedItem = spendingItemRepository.getReferenceById(itemId);
-            updatedItem.setCategory(itemFromRequest.getCategory());
-            updatedItem.setDescription(itemFromRequest.getDescription());
-            updatedItem.setMerchant(itemFromRequest.getMerchant());
-            updatedItem.setDate(itemFromRequest.getDate());
-            updatedItem.setDate(itemFromRequest.getDate());
-            return new ResponseEntity<>(spendingItemRepository.save(updatedItem), HttpStatus.OK);
-        } catch (SpendingItemNotFoundException ex) {
+        if (spendingItemRepository.getReferenceById(itemId) == null) {
             throw new SpendingItemNotFoundException(itemId);
         }
+        itemFromRequest.setBook(spendingItemRepository.getReferenceById(itemId).getBook());
+        SpendingItem updatedItem = spendingItemRepository.save(itemFromRequest);
+        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/items/{itemId}")

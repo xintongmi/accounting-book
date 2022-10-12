@@ -16,6 +16,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.hateoas.server.core.Relation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Relation(collectionRelation = "books")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class AccountBook {
 
     @Id
@@ -35,7 +37,7 @@ public class AccountBook {
     @JsonIgnore
     private List<SpendingItem> spendingItems;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore // To ignore the logical property used in serialization and deserialization

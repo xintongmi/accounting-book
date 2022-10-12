@@ -27,7 +27,10 @@ export class UpdateItemDialogComponent {
       merchant: [this.data.item?.merchant ?? '', Validators.maxLength(30)],
       amount: [
         this.data.item?.amount ?? 0,
-        [Validators.required, Validators.pattern('^([0-9]+(.[0-9]?[0-9]?)?)$')],
+        [
+          Validators.required,
+          Validators.pattern('^([0-9]+(\\.[0-9]?[0-9]?)?)$'),
+        ],
       ],
     });
   }

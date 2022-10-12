@@ -31,6 +31,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { UpdateBookDialogComponent } from './components/update-book-dialog/update-book-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     SpendingItemListComponent,
     FilterBarComponent,
     UpdateItemDialogComponent,
+    UpdateBookDialogComponent,
   ],
   imports: [
     MatInputModule,
