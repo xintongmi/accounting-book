@@ -45,6 +45,20 @@ export class AccountBookService {
       })
     );
   }
+
+  addBook(newBook: AccountBook) {
+    return this.httpClient.post<AccountBook>(this.booksUrl, newBook);
+  }
+
+  updateBook(book: AccountBook) {
+    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${book.id}`;
+    return this.httpClient.put<AccountBook>(url, book);
+  }
+
+  deleteBook(book: AccountBook) {
+    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${book.id}`;
+    return this.httpClient.delete(url);
+  }
 }
 
 declare interface RawAccountBook {

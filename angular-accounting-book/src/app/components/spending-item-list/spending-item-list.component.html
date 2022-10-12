@@ -34,7 +34,7 @@
     <section class="items-section">
       <!-- ADD + SEARCH / FILTER BAR -->
       <div class="table-header">
-        <button mat-mini-fab color="accent" (click)="openEditDialog()">
+        <button mat-mini-fab color="accent" (click)="openEditItemDialog()">
           <mat-icon fontIcon="add"></mat-icon>
         </button>
         <app-filter-bar
@@ -100,14 +100,14 @@
           <td mat-cell *matCellDef="let spendingItem">
             <button
               mat-icon-button
-              (click)="openEditDialog(spendingItem)"
+              (click)="openEditItemDialog(spendingItem)"
               aria-label="Example edit icon"
             >
               <mat-icon>edit</mat-icon>
             </button>
             <button
               mat-icon-button
-              (click)="openDeleteDialog(spendingItem)"
+              (click)="openDeleteItemDialog(spendingItem)"
               aria-label="Example delete icon"
             >
               <mat-icon>delete</mat-icon>

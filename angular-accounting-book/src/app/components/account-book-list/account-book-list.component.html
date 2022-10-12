@@ -23,16 +23,43 @@
       <mat-card-content class="book-desc"> desc </mat-card-content>
 
       <mat-card-actions align="end">
-        <button mat-button (click)="$event.stopPropagation()">DELETE</button>
+        <button
+          mat-button
+          (click)="$event.stopPropagation(); openEditBookDialog(accountBook)"
+        >
+          EDIT
+        </button>
+        <button
+          mat-button
+          (click)="$event.stopPropagation(); openDeleteBookDialog(accountBook)"
+        >
+          DELETE
+        </button>
       </mat-card-actions>
     </mat-card>
   </div>
   <div>
     <mat-card
-      (click)="createBook()"
+      (click)="openEditBookDialog()"
       class="account-book-card account-book-add-card"
     >
       <mat-icon class="add-icon">add</mat-icon>
     </mat-card>
   </div>
 </div>
+<!-- DELETE COMFIRM DIALOG -->
+<ng-template #deleteConfirmDialog>
+  <h3 matDialogTitle>Are you sure you want to permanently delete this book?</h3>
+  <mat-dialog-content>
+    <p>You won't be able to undo this action and restore this book.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button matDialogClose (click)="pendingDeleteBook = undefined">
+      Cancel
+    </button>
+    <button mat-button matDialogClose color="primary" (click)="deleteBook()">
+      Delete
+    </button>
+  </mat-dialog-actions>
+</ng-template>
+<!-- END DELETE COMFIRM DIALOG -->

@@ -16,6 +16,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.hateoas.server.core.Relation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,6 +26,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Relation(collectionRelation = "items")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class SpendingItem {
 
     private @Id @GeneratedValue Long id;

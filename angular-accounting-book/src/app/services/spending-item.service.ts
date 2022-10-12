@@ -37,7 +37,6 @@ export class SpendingItemService {
     if (text) {
       params.push(`text=${text}`);
     }
-    // TODO
     const suffix = params.join('&');
     searchUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}/${
       ApiEntitySegments.ITEMS
@@ -52,11 +51,16 @@ export class SpendingItemService {
     );
   }
 
-  updateItem(newItem: SpendingItem) {
+  addItem(newItem: SpendingItem) {
     const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
       newItem.bookId
     }/${ApiEntitySegments.ITEMS}`;
     return this.httpClient.post<SpendingItem>(url, newItem);
+  }
+
+  updateItem(item: SpendingItem) {
+    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.ITEMS}/${item.id}`;
+    return this.httpClient.put<SpendingItem>(url, item);
   }
 
   deleteItem(item: SpendingItem) {
