@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 
-@CrossOrigin("http://localhost:4200")
 public interface AccountBookRepository extends JpaRepository<AccountBook, Long> {
 
     Page<AccountBook> findById(Long id, Pageable pageable);

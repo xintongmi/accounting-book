@@ -14,7 +14,9 @@ public class AccountBookModelAssembler
     @Override
     public EntityModel<AccountBook> toModel(AccountBook book) {
         return EntityModel.of(book,
-                linkTo(methodOn(AccountBookController.class).one(book.getId(), 0, 0)).withSelfRel(),
-                linkTo(methodOn(AccountBookController.class).all(0, 0)).withRel("books"));
+                linkTo(methodOn(AccountBookController.class).one(book.getAccount().getEmail(),
+                        book.getId(), 0, 0)).withSelfRel(),
+                linkTo(methodOn(AccountBookController.class).all(book.getAccount().getEmail(), 0,
+                        0)).withRel("books"));
     }
 }
