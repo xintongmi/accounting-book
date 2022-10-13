@@ -9,9 +9,9 @@ export interface FilterChange {
 }
 
 @Component({
-  selector: 'app-filter-bar',
-  templateUrl: './filter-bar.component.html',
-  styleUrls: ['./filter-bar.component.scss'],
+  selector: 'app-item-filter-bar',
+  templateUrl: './item-filter-bar.component.html',
+  styleUrls: ['./item-filter-bar.component.scss'],
 })
 export class FilterBarComponent implements OnDestroy {
   filterForm: FormGroup;

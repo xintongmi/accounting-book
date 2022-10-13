@@ -7,7 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { AccountBookService } from 'src/app/services/account-book.service';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
-import { FilterChange } from '../filter-bar/filter-bar.component';
+import { FilterChange } from '../item-filter-bar/item-filter-bar.component';
 import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dialog.component';
 
 @Component({
