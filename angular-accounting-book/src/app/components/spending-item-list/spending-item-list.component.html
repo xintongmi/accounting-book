@@ -9,13 +9,7 @@
   </button>
   <span>{{ bookName }}</span>
   <span class="toolbar-spacer"></span>
-  <button
-    mat-icon-button
-    class="logout-icon"
-    aria-label="Example icon-button with logout icon"
-  >
-    <mat-icon>logout</mat-icon>
-  </button>
+  <app-login-status></app-login-status>
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
 <mat-drawer-container class="page-container">
@@ -37,9 +31,9 @@
         <button mat-mini-fab color="accent" (click)="openEditItemDialog()">
           <mat-icon fontIcon="add"></mat-icon>
         </button>
-        <app-filter-bar
+        <app-item-filter-bar
           (filterChange)="refreshTableOnFilterChange($event)"
-        ></app-filter-bar>
+        ></app-item-filter-bar>
       </div>
       <!-- END ADD + SEARCH / FILTER BAR -->
       <mat-divider></mat-divider>
@@ -54,8 +48,9 @@
         aria-label="Select page"
       ></mat-paginator>
       <!-- END PAGINATION -->
+      <div *ngIf="dataSource.length == 0">No items found.</div>
       <table
-        *ngIf="pageMode === 'records'"
+        *ngIf="pageMode === 'records' && dataSource.length > 0"
         mat-table
         [dataSource]="dataSource"
         class="spending-item-table mat-elevation-z8"

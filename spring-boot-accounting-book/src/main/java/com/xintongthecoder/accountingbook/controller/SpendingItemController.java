@@ -2,7 +2,6 @@ package com.xintongthecoder.accountingbook.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -16,7 +15,6 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +26,8 @@ import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
+import com.xintongthecoder.accountingbook.errorHandler.AccountAccessDeniedException;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
-import com.xintongthecoder.accountingbook.errorHandler.SpendingItemNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,9 +35,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 
-@CrossOrigin("http://localhost:4200")
 @RestController
-@RequestMapping("api")
+@RequestMapping("api/accounts")
 public class SpendingItemController {
 
     private final AccountBookRepository accountBookRepository;
@@ -48,8 +45,8 @@ public class SpendingItemController {
     private final PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler;
 
 
-    public SpendingItemController(SpendingItemRepository spendingItemRepository,
-            AccountBookRepository accountBookRepository,
+    public SpendingItemController(AccountBookRepository accountBookRepository,
+            SpendingItemRepository spendingItemRepository,
             SpendingItemModelAssembler spendingItemModelAssembler,
             PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler) {
         this.accountBookRepository = accountBookRepository;
@@ -58,24 +55,39 @@ public class SpendingItemController {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
-    @GetMapping(value = "/books/{bookId}/items/{itemId}", produces = {"application/hal+json"})
+    @GetMapping(value = "/{email}/books/{bookId}/items/{itemId}",
+            produces = {"application/hal+json"})
     public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> one(
-            @PathVariable(value = "bookId") Long bookId,
-            @PathVariable(value = "itemId") Long itemId,
+            @PathVariable("email") String email, @PathVariable("bookId") Long bookId,
+            @PathVariable("itemId") Long itemId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        if (!requestFromAuthorizedAccount(email, bookId)) {
+            throw new AccountAccessDeniedException("item");
+        }
         Page<SpendingItem> pagedItem =
                 spendingItemRepository.findById(itemId, PageRequest.of(page, size));
         return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                 .body(pagedResourcesAssembler.toModel(pagedItem, spendingItemModelAssembler));
     }
 
-    @GetMapping(value = "/books/{bookId}/items", produces = {"application/hal+json"})
-    public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> all(@PathVariable Long bookId,
+    private boolean requestFromAuthorizedAccount(String email, Long bookId) {
+        if (accountBookRepository.getReferenceById(bookId) == null) {
+            throw new AccountBookNotFoundException(bookId);
+        }
+        return accountBookRepository.findById(bookId).get().getAccount().getEmail().equals(email);
+    }
+
+    @GetMapping(value = "/{email}/books/{bookId}/items", produces = {"application/hal+json"})
+    public ResponseEntity<PagedModel<EntityModel<SpendingItem>>> all(
+            @PathVariable("email") String email, @PathVariable("bookId") Long bookId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "text", required = false) String text) {
+        if (!requestFromAuthorizedAccount(email, bookId)) {
+            throw new AccountAccessDeniedException("items");
+        }
         Page<SpendingItem> pagedItems = spendingItemRepository
                 .findAll(getFilters(bookId, category, text), PageRequest.of(page, size));
         return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
@@ -106,31 +118,38 @@ public class SpendingItemController {
         };
     }
 
-    @PostMapping(value = "/books/{bookId}/items")
-    public ResponseEntity<SpendingItem> addItem(@PathVariable Long bookId,
-            @RequestBody SpendingItem itemFromRequest) {
-        Optional<AccountBook> book = this.accountBookRepository.findById(bookId);
-        if (book.isEmpty()) {
-            throw new AccountBookNotFoundException(bookId);
+    @PostMapping(value = "{email}/books/{bookId}/items")
+    public ResponseEntity<SpendingItem> addItem(@PathVariable("email") String email,
+            @PathVariable Long bookId, @RequestBody SpendingItem itemFromRequest) {
+        if (!requestFromAuthorizedAccount(email, bookId)) {
+            throw new AccountAccessDeniedException("items");
         }
-        itemFromRequest.setBook(book.get());
+        AccountBook book = accountBookRepository.findById(bookId).get();
+        itemFromRequest.setBook(book);
         SpendingItem newItem = this.spendingItemRepository.save(itemFromRequest);
         return new ResponseEntity<>(newItem, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/items/{itemId}")
-    public ResponseEntity<SpendingItem> editItem(@PathVariable("itemId") Long itemId,
-            @RequestBody SpendingItem itemFromRequest) {
-        if (spendingItemRepository.getReferenceById(itemId) == null) {
-            throw new SpendingItemNotFoundException(itemId);
+    @PutMapping(value = "{email}/items/{itemId}")
+    public ResponseEntity<SpendingItem> editItem(@PathVariable("email") String email,
+            @PathVariable("itemId") Long itemId, @RequestBody SpendingItem itemFromRequest) {
+        Long bookId = spendingItemRepository.getReferenceById(itemId).getBook().getId();
+        if (!requestFromAuthorizedAccount(email, bookId)) {
+            throw new AccountAccessDeniedException("item");
         }
-        itemFromRequest.setBook(spendingItemRepository.getReferenceById(itemId).getBook());
+        AccountBook book = accountBookRepository.getReferenceById(bookId);
+        itemFromRequest.setBook(book);
         SpendingItem updatedItem = spendingItemRepository.save(itemFromRequest);
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/items/{itemId}")
-    public ResponseEntity<HttpStatus> deleteItem(@PathVariable(value = "itemId") Long itemId) {
+    @DeleteMapping(value = "{email}/items/{itemId}")
+    public ResponseEntity<HttpStatus> deleteItem(@PathVariable("email") String email,
+            @PathVariable("itemId") Long itemId) {
+        Long bookId = spendingItemRepository.getReferenceById(itemId).getBook().getId();
+        if (!requestFromAuthorizedAccount(email, bookId)) {
+            throw new AccountAccessDeniedException("item");
+        }
         spendingItemRepository.deleteById(itemId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

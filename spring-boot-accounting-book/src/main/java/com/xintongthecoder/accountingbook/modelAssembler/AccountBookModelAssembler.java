@@ -10,11 +10,13 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class AccountBookModelAssembler
-        implements RepresentationModelAssembler<AccountBook, EntityModel<AccountBook>> {
-    @Override
-    public EntityModel<AccountBook> toModel(AccountBook book) {
-        return EntityModel.of(book,
-                linkTo(methodOn(AccountBookController.class).one(book.getId(), 0, 0)).withSelfRel(),
-                linkTo(methodOn(AccountBookController.class).all(0, 0)).withRel("books"));
-    }
+                implements RepresentationModelAssembler<AccountBook, EntityModel<AccountBook>> {
+        @Override
+        public EntityModel<AccountBook> toModel(AccountBook book) {
+                return EntityModel.of(book,
+                                linkTo(methodOn(AccountBookController.class).one(null, book.getId(),
+                                                null, null)).withSelfRel(),
+                                linkTo(methodOn(AccountBookController.class).all(null, null, null))
+                                                .withRel("books"));
+        }
 }
