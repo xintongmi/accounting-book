@@ -11,4 +11,6 @@ public interface AccountBookRepository extends JpaRepository<AccountBook, Long> 
     Page<AccountBook> findById(Long id, Pageable pageable);
 
     Page<AccountBook> findAllByAccount(Account account, Pageable pageable);
+
+    Page<AccountBook> findAll(Pageable pageable);
 }

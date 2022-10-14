@@ -6,6 +6,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.hateoas.server.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,7 @@ import com.xintongthecoder.accountingbook.modelAssembler.AccountBookModelAssembl
 
 @RestController
 @RequestMapping("api/accounts")
+@ExposesResourceFor(AccountBook.class)
 public class AccountBookController {
 
         private final AccountBookRepository accountBookRepository;
@@ -45,15 +47,11 @@ public class AccountBookController {
                 this.accountRepository = accountRepository;
         }
 
-        @GetMapping(value = "/{email}/books/{bookId}", produces = {"application/hal+json"})
+        @GetMapping(value = "{email}/books/{bookId}", produces = {"application/hal+json"})
         public ResponseEntity<PagedModel<EntityModel<AccountBook>>> one(
                         @PathVariable("email") String email, @PathVariable Long bookId,
-                        @RequestParam(value = "page", defaultValue = "0") int page,
-                        @RequestParam(value = "size", defaultValue = "10") int size) {
-                // Validate if this bookId belongs to the account
-                if (!requestFromAuthorizedAccount(email, bookId)) {
-                        throw new AccountAccessDeniedException("book");
-                }
+                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
                 Page<AccountBook> pagedBook =
                                 accountBookRepository.findById(bookId, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
@@ -72,8 +70,8 @@ public class AccountBookController {
         @GetMapping(value = "/{email}/books", produces = {"application/hal+json"})
         public ResponseEntity<PagedModel<EntityModel<AccountBook>>> all(
                         @PathVariable("email") String email,
-                        @RequestParam(value = "page", defaultValue = "0") int page,
-                        @RequestParam(value = "size", defaultValue = "10") int size) {
+                        @RequestParam(value = "page", defaultValue = "0") Integer page,
+                        @RequestParam(value = "size", defaultValue = "10") Integer size) {
                 Account account = accountRepository.findByEmail(email);
                 Page<AccountBook> pagedBooks = accountBookRepository.findAllByAccount(account,
                                 PageRequest.of(page, size));

@@ -2,7 +2,6 @@ package com.xintongthecoder.accountingbook.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -25,13 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.AccountRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
-import com.xintongthecoder.accountingbook.entity.Account;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
 import com.xintongthecoder.accountingbook.errorHandler.AccountAccessDeniedException;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
-import com.xintongthecoder.accountingbook.errorHandler.SpendingItemNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -43,19 +40,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("api/accounts")
 public class SpendingItemController {
 
-    private final AccountRepository accountRepository;
     private final AccountBookRepository accountBookRepository;
     private final SpendingItemRepository spendingItemRepository;
     private final SpendingItemModelAssembler spendingItemModelAssembler;
     private final PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler;
 
 
-    public SpendingItemController(AccountRepository accountRepository,
-            AccountBookRepository accountBookRepository,
+    public SpendingItemController(AccountBookRepository accountBookRepository,
             SpendingItemRepository spendingItemRepository,
             SpendingItemModelAssembler spendingItemModelAssembler,
             PagedResourcesAssembler<SpendingItem> pagedResourcesAssembler) {
-        this.accountRepository = accountRepository;
         this.accountBookRepository = accountBookRepository;
         this.spendingItemRepository = spendingItemRepository;
         this.spendingItemModelAssembler = spendingItemModelAssembler;
