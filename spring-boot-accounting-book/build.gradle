@@ -19,8 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	
-	// implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+	implementation 'com.okta.spring:okta-spring-security-oauth2:2.1.6'
 	// implementation 'org.springframework.boot:spring-boot-starter-security'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'org.postgresql:postgresql'
