@@ -1,22 +1,25 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { getBackendBaseUrl } from '../common/utils';
 import {
   AccountBook,
   ApiEntitySegments,
   ListAccountBookResponse,
   ListPage,
 } from '../data-types';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AccountBookService {
-  private readonly booksUrl = `${getBackendBaseUrl()}/${
+  private readonly booksUrl = `${this.accountService.getAccountBaseUrl()}/${
     ApiEntitySegments.BOOKS
   }`;
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    private accountService: AccountService
+  ) {}
 
   getAccountBookList(): Observable<ListAccountBookResponse> {
     return this.httpClient.get<Response>(this.booksUrl).pipe(
@@ -51,12 +54,16 @@ export class AccountBookService {
   }
 
   updateBook(book: AccountBook) {
-    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${book.id}`;
+    const url = `${this.accountService.getAccountBaseUrl()}/${
+      ApiEntitySegments.BOOKS
+    }/${book.id}`;
     return this.httpClient.put<AccountBook>(url, book);
   }
 
   deleteBook(book: AccountBook) {
-    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${book.id}`;
+    const url = `${this.accountService.getAccountBaseUrl()}/${
+      ApiEntitySegments.BOOKS
+    }/${book.id}`;
     return this.httpClient.delete(url);
   }
 }

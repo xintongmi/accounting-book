@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountRepository;
 import com.xintongthecoder.accountingbook.entity.Account;
-import com.xintongthecoder.accountingbook.modelAssembler.AccountAssembler;
+import com.xintongthecoder.accountingbook.modelAssembler.AccountModelAssembler;
 
 @RestController
 @RequestMapping("api")
 public class AccountController {
 
     private final AccountRepository accountRepository;
-    private final AccountAssembler accountAssembler;
+    private final AccountModelAssembler accountAssembler;
 
     public AccountController(AccountRepository accountRepository,
-            AccountAssembler accountAssembler) {
+            AccountModelAssembler accountAssembler) {
         this.accountRepository = accountRepository;
         this.accountAssembler = accountAssembler;
     }

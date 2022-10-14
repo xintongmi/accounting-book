@@ -21,6 +21,7 @@ import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.AccountRepository;
 import com.xintongthecoder.accountingbook.entity.Account;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
+import com.xintongthecoder.accountingbook.errorHandler.AccountAccessDeniedException;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.AccountBookModelAssembler;
 
@@ -49,6 +50,10 @@ public class AccountBookController {
                         @PathVariable("email") String email, @PathVariable Long bookId,
                         @RequestParam(value = "page", defaultValue = "0") int page,
                         @RequestParam(value = "size", defaultValue = "10") int size) {
+                // Validate if this bookId belongs to the account
+                if (!requestFromAuthorizedAccount(email, bookId)) {
+                        throw new AccountAccessDeniedException("book");
+                }
                 Page<AccountBook> pagedBook =
                                 accountBookRepository.findById(bookId, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
@@ -56,44 +61,56 @@ public class AccountBookController {
                                                 accountBookModelAssembler));
         }
 
+        private boolean requestFromAuthorizedAccount(String email, Long bookId) {
+                if (accountBookRepository.getReferenceById(bookId) == null) {
+                        throw new AccountBookNotFoundException(bookId);
+                }
+                return accountBookRepository.findById(bookId).get().getAccount().getEmail()
+                                .equals(email);
+        }
+
         @GetMapping(value = "/{email}/books", produces = {"application/hal+json"})
         public ResponseEntity<PagedModel<EntityModel<AccountBook>>> all(
                         @PathVariable("email") String email,
                         @RequestParam(value = "page", defaultValue = "0") int page,
                         @RequestParam(value = "size", defaultValue = "10") int size) {
-                Page<AccountBook> pagedBooks =
-                                accountBookRepository.findAll(PageRequest.of(page, size));
+                Account account = accountRepository.findByEmail(email);
+                Page<AccountBook> pagedBooks = accountBookRepository.findAllByAccount(account,
+                                PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                                 .body(pagedResourcesAssembler.toModel(pagedBooks,
                                                 accountBookModelAssembler));
         }
 
-        // @PostMapping(value = "/{email}/books", produces = {"application/hal+json"})
-        // public ResponseEntity<AccountBook> addBook(@PathVariable("email") String email,
-        // @RequestBody AccountBook bookFromRequest) {
-        // Account account = accountRepository.findByEmail(email);
-        // bookFromRequest.setAccount(account);
-        // AccountBook newBook = this.accountBookRepository.save(bookFromRequest);
-        // return new ResponseEntity<>(newBook, HttpStatus.CREATED);
-        // }
+        @PostMapping(value = "/{email}/books", produces = {"application/hal+json"})
+        public ResponseEntity<AccountBook> addBook(@PathVariable("email") String email,
+                        @RequestBody AccountBook bookFromRequest) {
+                Account account = accountRepository.findByEmail(email);
+                bookFromRequest.setAccount(account);
+                AccountBook newBook = this.accountBookRepository.save(bookFromRequest);
+                return new ResponseEntity<>(newBook, HttpStatus.CREATED);
+        }
 
-        // @PutMapping(value = "{email}/books/{bookId}", produces = {"application/hal+json"})
-        // public ResponseEntity<AccountBook> editBook(@PathVariable("email") String email,
-        // @PathVariable("bookId") Long bookId,
-        // @RequestBody AccountBook bookFromRequest) {
-        // if (accountBookRepository.getReferenceById(bookId) == null) {
-        // throw new AccountBookNotFoundException(bookId);
-        // }
-        // bookFromRequest.setAccount(
-        // accountBookRepository.getReferenceById(bookId).getAccount());
-        // AccountBook updatedBook = accountBookRepository.save(bookFromRequest);
-        // return new ResponseEntity<AccountBook>(updatedBook, HttpStatus.OK);
-        // }
+        @PutMapping(value = "{email}/books/{bookId}", produces = {"application/hal+json"})
+        public ResponseEntity<AccountBook> editBook(@PathVariable("email") String email,
+                        @PathVariable("bookId") Long bookId,
+                        @RequestBody AccountBook bookFromRequest) {
+                if (!requestFromAuthorizedAccount(email, bookId)) {
+                        throw new AccountAccessDeniedException("book");
+                }
+                Account account = accountRepository.findByEmail(email);
+                bookFromRequest.setAccount(account);
+                AccountBook updatedBook = accountBookRepository.save(bookFromRequest);
+                return new ResponseEntity<AccountBook>(updatedBook, HttpStatus.OK);
+        }
 
-        // @DeleteMapping(value = "{email}/books/{bookId}", produces = {"application/hal+json"})
-        // public ResponseEntity<HttpStatus> deleteBook(@PathVariable("email") String email,
-        // @PathVariable("bookId") Long bookId) {
-        // accountBookRepository.deleteById(bookId);
-        // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        // }
+        @DeleteMapping(value = "{email}/books/{bookId}", produces = {"application/hal+json"})
+        public ResponseEntity<HttpStatus> deleteBook(@PathVariable("email") String email,
+                        @PathVariable("bookId") Long bookId) {
+                if (!requestFromAuthorizedAccount(email, bookId)) {
+                        throw new AccountAccessDeniedException("book");
+                }
+                accountBookRepository.deleteById(bookId);
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 }

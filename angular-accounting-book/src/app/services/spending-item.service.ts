@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { getBackendBaseUrl } from '../common/utils';
 import {
   ApiEntitySegments,
   Category,
@@ -15,6 +14,12 @@ import { AccountService } from './account.service';
   providedIn: 'root',
 })
 export class SpendingItemService {
+  private booksUrl = `${this.accountService.getAccountBaseUrl()}/${
+    ApiEntitySegments.BOOKS
+  }`;
+  private itemsUrl = `${this.accountService.getAccountBaseUrl()}/${
+    ApiEntitySegments.ITEMS
+  }`;
   constructor(
     private readonly httpClient: HttpClient,
     private readonly accountService: AccountService
@@ -38,9 +43,7 @@ export class SpendingItemService {
       params.push(`text=${text}`);
     }
     const suffix = params.join('&');
-    searchUrl = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${bookId}/${
-      ApiEntitySegments.ITEMS
-    }?${suffix}`;
+    searchUrl = `${this.booksUrl}/${bookId}/${ApiEntitySegments.ITEMS}?${suffix}`;
     return this.httpClient.get<GetResponse>(searchUrl).pipe(
       map((response) => {
         return {
@@ -52,19 +55,17 @@ export class SpendingItemService {
   }
 
   addItem(newItem: SpendingItem) {
-    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.BOOKS}/${
-      newItem.bookId
-    }/${ApiEntitySegments.ITEMS}`;
+    const url = `${this.booksUrl}/${newItem.bookId}/${ApiEntitySegments.ITEMS}`;
     return this.httpClient.post<SpendingItem>(url, newItem);
   }
 
   updateItem(item: SpendingItem) {
-    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.ITEMS}/${item.id}`;
+    const url = `${this.itemsUrl}/${item.id}`;
     return this.httpClient.put<SpendingItem>(url, item);
   }
 
   deleteItem(item: SpendingItem) {
-    const url = `${getBackendBaseUrl()}/${ApiEntitySegments.ITEMS}/${item.id}`;
+    const url = `${this.itemsUrl}/${item.id}`;
     return this.httpClient.delete(url);
   }
 }
