@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
-import com.xintongthecoder.accountingbook.dao.AccountRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;

@@ -48,8 +48,9 @@
         aria-label="Select page"
       ></mat-paginator>
       <!-- END PAGINATION -->
+      <div *ngIf="dataSource.length == 0">No items found.</div>
       <table
-        *ngIf="pageMode === 'records'"
+        *ngIf="pageMode === 'records' && dataSource.length > 0"
         mat-table
         [dataSource]="dataSource"
         class="spending-item-table mat-elevation-z8"
