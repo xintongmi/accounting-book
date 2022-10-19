@@ -8,22 +8,28 @@ import {
   ListSpendingItemResponse,
   SpendingItem,
 } from '../data-types';
+import { AccountBookService } from './account-book.service';
 import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpendingItemService {
-  private booksUrl = `${this.accountService.getAccountBaseUrl()}/${
-    ApiEntitySegments.BOOKS
-  }`;
-  private itemsUrl = `${this.accountService.getAccountBaseUrl()}/${
-    ApiEntitySegments.ITEMS
-  }`;
+  private booksUrl = '';
+  private itemsUrl = '';
   constructor(
     private readonly httpClient: HttpClient,
     private readonly accountService: AccountService
-  ) {}
+  ) {
+    this.getUrls();
+  }
+
+  getUrls() {
+    this.accountService.getAccountBaseUrl().subscribe((accountBaseUrl) => {
+      this.booksUrl = `${accountBaseUrl}/${ApiEntitySegments.BOOKS}`;
+      this.itemsUrl = `${accountBaseUrl}/${ApiEntitySegments.ITEMS}`;
+    });
+  }
 
   getSpendingItemList(
     bookId: number,
