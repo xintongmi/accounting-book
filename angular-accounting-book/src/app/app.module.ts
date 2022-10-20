@@ -9,7 +9,7 @@ import {
   OKTA_CONFIG,
 } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
-import myAppConfig from './config/my-app-config';
+import { APP_CONFIG } from './config/app-config';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,7 +43,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { LandingComponent } from './components/landing/landing.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 
-const oktaConfig = myAppConfig.oidc;
+const oktaConfig = APP_CONFIG.oidc;
 const oktaAuth = new OktaAuth(oktaConfig);
 
 @NgModule({

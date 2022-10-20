@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import {
   AccountBook,
   ApiEntitySegments,
@@ -13,20 +13,29 @@ import { AccountService } from './account.service';
   providedIn: 'root',
 })
 export class AccountBookService {
-  private readonly booksUrl = `${this.accountService.getAccountBaseUrl()}/${
-    ApiEntitySegments.BOOKS
-  }`;
   constructor(
     private httpClient: HttpClient,
     private accountService: AccountService
   ) {}
 
+  getBookUrl(id?: number): Observable<string> {
+    return this.accountService.getAccountBaseUrl().pipe(
+      map((accountBaseUrl) => {
+        if (id) {
+          return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${id}`;
+        }
+        return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}`;
+      })
+    );
+  }
+
   getAccountBookList(): Observable<ListAccountBookResponse> {
-    return this.httpClient.get<Response>(this.booksUrl).pipe(
+    return this.getBookUrl().pipe(
+      switchMap((booksUrl) => this.httpClient.get<Response>(booksUrl)),
       map((response): ListAccountBookResponse => {
         return {
           page: response.page,
-          accountBooks: response._embedded.books.map((rawBook) => ({
+          accountBooks: (response._embedded?.books ?? []).map((rawBook) => ({
             id: rawBook.id,
             name: rawBook.name,
           })),
@@ -36,35 +45,36 @@ export class AccountBookService {
   }
 
   getAccountBook(bookId: number): Observable<ListAccountBookResponse> {
-    return this.httpClient.get<Response>(`${this.booksUrl}/${bookId}`).pipe(
-      map((response): ListAccountBookResponse => {
-        return {
-          page: response.page,
-          accountBooks: response._embedded.books.map((rawBook) => ({
-            id: rawBook.id,
-            name: rawBook.name,
-          })),
-        };
-      })
+    return this.getBookUrl(bookId).pipe(
+      switchMap((bookUrl) => this.httpClient.get<Response>(bookUrl)),
+      map((response) => ({
+        page: response.page,
+        accountBooks: (response._embedded?.books ?? []).map((rawBook) => ({
+          id: rawBook.id,
+          name: rawBook.name,
+        })),
+      }))
     );
   }
 
   addBook(newBook: AccountBook) {
-    return this.httpClient.post<AccountBook>(this.booksUrl, newBook);
+    return this.getBookUrl().pipe(
+      switchMap((booksUrl) =>
+        this.httpClient.post<AccountBook>(booksUrl, newBook)
+      )
+    );
   }
 
   updateBook(book: AccountBook) {
-    const url = `${this.accountService.getAccountBaseUrl()}/${
-      ApiEntitySegments.BOOKS
-    }/${book.id}`;
-    return this.httpClient.put<AccountBook>(url, book);
+    return this.getBookUrl(book.id).pipe(
+      switchMap((bookUrl) => this.httpClient.put<AccountBook>(bookUrl, book))
+    );
   }
 
   deleteBook(book: AccountBook) {
-    const url = `${this.accountService.getAccountBaseUrl()}/${
-      ApiEntitySegments.BOOKS
-    }/${book.id}`;
-    return this.httpClient.delete(url);
+    return this.getBookUrl(book.id).pipe(
+      switchMap((bookUrl) => this.httpClient.delete(bookUrl))
+    );
   }
 }
 
@@ -75,7 +85,7 @@ declare interface RawAccountBook {
 
 declare interface Response {
   page: ListPage;
-  _embedded: {
+  _embedded?: {
     books: RawAccountBook[];
   };
 }

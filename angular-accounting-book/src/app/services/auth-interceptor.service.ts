@@ -21,12 +21,6 @@ export class AuthInterceptorService implements HttpInterceptor {
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    return from(this.handleAccess(request, next));
-  }
-  private handleAccess(
-    request: HttpRequest<any>,
-    next: HttpHandler
-  ): Observable<HttpEvent<any>> {
     // Add an access token for secured endpoints
     const securedEndpoints = [
       `${getBackendBaseUrl()}/${ApiEntitySegments.ACCOUNTS}`,
@@ -41,7 +35,6 @@ export class AuthInterceptorService implements HttpInterceptor {
         },
       });
     }
-
     return from(lastValueFrom(next.handle(request)));
   }
 }

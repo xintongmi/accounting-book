@@ -13,7 +13,7 @@ function sendToLoginPage(oktaAuth: OktaAuth, injector: Injector) {
 }
 
 const routes: Routes = [
-  { path: '', component: LandingComponent },
+  { path: '', redirectTo: '/books', pathMatch: 'full' },
   { path: 'login/callback', component: OktaCallbackComponent },
   { path: 'login', component: LoginComponent },
   // [OktaAuthGuard] garantees no one can backdoor the routes or

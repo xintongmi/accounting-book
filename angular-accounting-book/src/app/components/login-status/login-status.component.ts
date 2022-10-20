@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { OktaAuthStateService, OKTA_AUTH } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
+import { from } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
 
 @Component({
@@ -27,13 +28,8 @@ export class LoginStatusComponent implements OnInit {
 
   getUserDetails() {
     if (this.isAuthenticated) {
-      this.oktaAuth.getUser().then((res) => {
-        this.userFullName = res.name as string;
-        const userEmail = res.email;
-        this.accountService.storage.setItem(
-          'userEmail',
-          JSON.stringify(userEmail)
-        );
+      from(this.oktaAuth.getUser()).subscribe((res) => {
+        this.userFullName = res.name ?? '';
       });
     }
   }
