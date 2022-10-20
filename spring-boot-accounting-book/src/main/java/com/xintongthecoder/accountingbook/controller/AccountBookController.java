@@ -1,5 +1,6 @@
 package com.xintongthecoder.accountingbook.controller;
 
+import java.util.ArrayList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -52,6 +53,9 @@ public class AccountBookController {
                         @PathVariable("email") String email, @PathVariable Long bookId,
                         @RequestParam(value = "page", defaultValue = "0") Integer page,
                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
+                if (!requestFromAuthorizedAccount(email, bookId)) {
+                        throw new AccountAccessDeniedException("book");
+                }
                 Page<AccountBook> pagedBook =
                                 accountBookRepository.findById(bookId, PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
@@ -73,6 +77,12 @@ public class AccountBookController {
                         @RequestParam(value = "page", defaultValue = "0") Integer page,
                         @RequestParam(value = "size", defaultValue = "10") Integer size) {
                 Account account = accountRepository.findByEmail(email);
+                if (account == null) {
+                        account = new Account();
+                        account.setEmail(email);
+                        account.setAccountBooks(new ArrayList<>());
+                        accountRepository.save(account);
+                }
                 Page<AccountBook> pagedBooks = accountBookRepository.findAllByAccount(account,
                                 PageRequest.of(page, size));
                 return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
