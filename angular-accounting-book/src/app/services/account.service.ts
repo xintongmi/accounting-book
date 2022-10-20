@@ -11,8 +11,6 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class AccountService {
-  storage = sessionStorage;
-
   constructor(@Inject(OKTA_AUTH) private oktaAuth: OktaAuth) {}
 
   getAccountEmail(): Observable<string> {

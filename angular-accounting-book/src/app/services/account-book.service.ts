@@ -18,7 +18,7 @@ export class AccountBookService {
     private accountService: AccountService
   ) {}
 
-  getBooksUrl(id?: number): Observable<string> {
+  getBookUrl(id?: number): Observable<string> {
     return this.accountService.getAccountBaseUrl().pipe(
       map((accountBaseUrl) => {
         if (id) {
@@ -30,7 +30,7 @@ export class AccountBookService {
   }
 
   getAccountBookList(): Observable<ListAccountBookResponse> {
-    return this.getBooksUrl().pipe(
+    return this.getBookUrl().pipe(
       switchMap((booksUrl) => this.httpClient.get<Response>(booksUrl)),
       map((response): ListAccountBookResponse => {
         return {
@@ -45,7 +45,7 @@ export class AccountBookService {
   }
 
   getAccountBook(bookId: number): Observable<ListAccountBookResponse> {
-    return this.getBooksUrl(bookId).pipe(
+    return this.getBookUrl(bookId).pipe(
       switchMap((bookUrl) => this.httpClient.get<Response>(bookUrl)),
       map((response) => ({
         page: response.page,
@@ -58,7 +58,7 @@ export class AccountBookService {
   }
 
   addBook(newBook: AccountBook) {
-    return this.getBooksUrl().pipe(
+    return this.getBookUrl().pipe(
       switchMap((booksUrl) =>
         this.httpClient.post<AccountBook>(booksUrl, newBook)
       )
@@ -66,13 +66,13 @@ export class AccountBookService {
   }
 
   updateBook(book: AccountBook) {
-    return this.getBooksUrl(book.id).pipe(
+    return this.getBookUrl(book.id).pipe(
       switchMap((bookUrl) => this.httpClient.put<AccountBook>(bookUrl, book))
     );
   }
 
   deleteBook(book: AccountBook) {
-    return this.getBooksUrl(book.id).pipe(
+    return this.getBookUrl(book.id).pipe(
       switchMap((bookUrl) => this.httpClient.delete(bookUrl))
     );
   }

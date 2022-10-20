@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import {
   ApiEntitySegments,
   Category,
@@ -15,20 +15,23 @@ import { AccountService } from './account.service';
   providedIn: 'root',
 })
 export class SpendingItemService {
-  private booksUrl = '';
-  private itemsUrl = '';
   constructor(
     private readonly httpClient: HttpClient,
     private readonly accountService: AccountService
-  ) {
-    this.getUrls();
-  }
+  ) {}
 
-  getUrls() {
-    this.accountService.getAccountBaseUrl().subscribe((accountBaseUrl) => {
-      this.booksUrl = `${accountBaseUrl}/${ApiEntitySegments.BOOKS}`;
-      this.itemsUrl = `${accountBaseUrl}/${ApiEntitySegments.ITEMS}`;
-    });
+  getUrl(ids: { bookId?: number; itemId?: number }): Observable<string> {
+    return this.accountService.getAccountBaseUrl().pipe(
+      map((accountBaseUrl) => {
+        if (ids.bookId) {
+          return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${ids.bookId}/${ApiEntitySegments.ITEMS}`;
+        }
+        if (ids.itemId) {
+          return `${accountBaseUrl}/${ApiEntitySegments.ITEMS}/${ids.itemId}`;
+        }
+        throw new Error('Missing ids');
+      })
+    );
   }
 
   getSpendingItemList(
@@ -49,34 +52,36 @@ export class SpendingItemService {
       params.push(`text=${text}`);
     }
     const suffix = params.join('&');
-    searchUrl = `${this.booksUrl}/${bookId}/${ApiEntitySegments.ITEMS}?${suffix}`;
-    return this.httpClient.get<GetResponse>(searchUrl).pipe(
-      map((response) => {
-        return {
-          spendingItems: response._embedded?.items ?? [],
-          page: response.page,
-        };
-      })
+    return this.getUrl({ bookId }).pipe(
+      map((url) => `${url}?${suffix}`),
+      switchMap((url) => this.httpClient.get<Response>(url)),
+      map((response) => ({
+        spendingItems: response._embedded?.items ?? [],
+        page: response.page,
+      }))
     );
   }
 
   addItem(newItem: SpendingItem) {
-    const url = `${this.booksUrl}/${newItem.bookId}/${ApiEntitySegments.ITEMS}`;
-    return this.httpClient.post<SpendingItem>(url, newItem);
+    return this.getUrl({ bookId: newItem.bookId }).pipe(
+      switchMap((url) => this.httpClient.post<SpendingItem>(url, newItem))
+    );
   }
 
   updateItem(item: SpendingItem) {
-    const url = `${this.itemsUrl}/${item.id}`;
-    return this.httpClient.put<SpendingItem>(url, item);
+    return this.getUrl({ itemId: item.id }).pipe(
+      switchMap((url) => this.httpClient.put<SpendingItem>(url, item))
+    );
   }
 
   deleteItem(item: SpendingItem) {
-    const url = `${this.itemsUrl}/${item.id}`;
-    return this.httpClient.delete(url);
+    return this.getUrl({ itemId: item.id }).pipe(
+      switchMap((url) => this.httpClient.delete(url))
+    );
   }
 }
 
-declare interface GetResponse {
+declare interface Response {
   _embedded?: {
     items: SpendingItem[];
   };
