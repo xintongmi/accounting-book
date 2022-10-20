@@ -7,13 +7,24 @@ import { LandingComponent } from './components/landing/landing.component';
 import { LoginComponent } from './components/login/login.component';
 import { OktaAuth } from '@okta/okta-auth-js';
 
+function sendToLandingPage(oktaAuth: OktaAuth, injector: Injector) {
+  const router = injector.get(Router);
+  router.navigate(['/landing']);
+}
+
 function sendToLoginPage(oktaAuth: OktaAuth, injector: Injector) {
   const router = injector.get(Router);
   router.navigate(['/login']);
 }
 
 const routes: Routes = [
-  { path: '', redirectTo: '/books', pathMatch: 'full' },
+  {
+    path: '',
+    component: AccountBookListComponent,
+    canActivate: [OktaAuthGuard],
+    data: { onAuthRequired: sendToLandingPage },
+  },
+  { path: 'landing', component: LandingComponent },
   { path: 'login/callback', component: OktaCallbackComponent },
   { path: 'login', component: LoginComponent },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
