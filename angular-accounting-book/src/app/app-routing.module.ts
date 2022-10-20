@@ -18,7 +18,6 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
   // access the routes directly without being authenticated
-
   {
     path: 'books',
     component: AccountBookListComponent,

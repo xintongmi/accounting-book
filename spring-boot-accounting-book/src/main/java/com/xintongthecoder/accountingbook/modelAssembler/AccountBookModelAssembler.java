@@ -15,7 +15,7 @@ public class AccountBookModelAssembler
         public EntityModel<AccountBook> toModel(AccountBook book) {
                 return EntityModel.of(book,
                                 linkTo(methodOn(AccountBookController.class).one(null, book.getId(),
-                                                null, null)).withSelfRel(),
+                                                null, null, null)).withSelfRel(),
                                 linkTo(methodOn(AccountBookController.class).all(null, null, null))
                                                 .withRel("books"));
         }

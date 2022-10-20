@@ -1,5 +1,6 @@
 package com.xintongthecoder.accountingbook.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,12 +22,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;
 import com.xintongthecoder.accountingbook.entity.SpendingItem;
-import com.xintongthecoder.accountingbook.errorHandler.AccountAccessDeniedException;
 import com.xintongthecoder.accountingbook.errorHandler.AccountBookNotFoundException;
 import com.xintongthecoder.accountingbook.modelAssembler.SpendingItemModelAssembler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,9 +62,9 @@ public class SpendingItemController {
             @PathVariable("email") String email, @PathVariable("bookId") Long bookId,
             @PathVariable("itemId") Long itemId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "10") Integer size) {
-        if (!requestFromAuthorizedAccount(email, bookId)) {
-            throw new AccountAccessDeniedException("item");
+            @RequestParam(value = "size", defaultValue = "10") Integer size, Principal user) {
+        if (!isFromAuthorizedAccount(email, bookId, user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         Page<SpendingItem> pagedItem =
                 spendingItemRepository.findById(itemId, PageRequest.of(page, size));
@@ -71,11 +72,12 @@ public class SpendingItemController {
                 .body(pagedResourcesAssembler.toModel(pagedItem, spendingItemModelAssembler));
     }
 
-    private boolean requestFromAuthorizedAccount(String email, Long bookId) {
+    private boolean isFromAuthorizedAccount(String email, Long bookId, Principal user) {
         if (accountBookRepository.getReferenceById(bookId) == null) {
             throw new AccountBookNotFoundException(bookId);
         }
-        return accountBookRepository.findById(bookId).get().getAccount().getEmail().equals(email);
+        return accountBookRepository.findById(bookId).get().getAccount().getEmail().equals(email)
+                && user.getName().equals(email);
     }
 
     @GetMapping(value = "/{email}/books/{bookId}/items", produces = {"application/hal+json"})
@@ -84,9 +86,9 @@ public class SpendingItemController {
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
             @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "text", required = false) String text) {
-        if (!requestFromAuthorizedAccount(email, bookId)) {
-            throw new AccountAccessDeniedException("items");
+            @RequestParam(value = "text", required = false) String text, Principal user) {
+        if (!isFromAuthorizedAccount(email, bookId, user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         Page<SpendingItem> pagedItems = spendingItemRepository
                 .findAll(getFilters(bookId, category, text), PageRequest.of(page, size));
@@ -120,9 +122,9 @@ public class SpendingItemController {
 
     @PostMapping(value = "{email}/books/{bookId}/items")
     public ResponseEntity<SpendingItem> addItem(@PathVariable("email") String email,
-            @PathVariable Long bookId, @RequestBody SpendingItem itemFromRequest) {
-        if (!requestFromAuthorizedAccount(email, bookId)) {
-            throw new AccountAccessDeniedException("items");
+            @PathVariable Long bookId, @RequestBody SpendingItem itemFromRequest, Principal user) {
+        if (!isFromAuthorizedAccount(email, bookId, user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         AccountBook book = accountBookRepository.findById(bookId).get();
         itemFromRequest.setBook(book);
@@ -132,10 +134,11 @@ public class SpendingItemController {
 
     @PutMapping(value = "{email}/items/{itemId}")
     public ResponseEntity<SpendingItem> editItem(@PathVariable("email") String email,
-            @PathVariable("itemId") Long itemId, @RequestBody SpendingItem itemFromRequest) {
+            @PathVariable("itemId") Long itemId, @RequestBody SpendingItem itemFromRequest,
+            Principal user) {
         Long bookId = spendingItemRepository.getReferenceById(itemId).getBook().getId();
-        if (!requestFromAuthorizedAccount(email, bookId)) {
-            throw new AccountAccessDeniedException("item");
+        if (!isFromAuthorizedAccount(email, bookId, user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         AccountBook book = accountBookRepository.getReferenceById(bookId);
         itemFromRequest.setBook(book);
@@ -145,13 +148,12 @@ public class SpendingItemController {
 
     @DeleteMapping(value = "{email}/items/{itemId}")
     public ResponseEntity<HttpStatus> deleteItem(@PathVariable("email") String email,
-            @PathVariable("itemId") Long itemId) {
+            @PathVariable("itemId") Long itemId, Principal user) {
         Long bookId = spendingItemRepository.getReferenceById(itemId).getBook().getId();
-        if (!requestFromAuthorizedAccount(email, bookId)) {
-            throw new AccountAccessDeniedException("item");
+        if (!isFromAuthorizedAccount(email, bookId, user)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         spendingItemRepository.deleteById(itemId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }
