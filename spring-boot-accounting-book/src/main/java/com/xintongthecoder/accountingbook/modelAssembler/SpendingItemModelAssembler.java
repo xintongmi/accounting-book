@@ -17,8 +17,8 @@ public class SpendingItemModelAssembler
                 String email = item.getBook().getAccount().getEmail();
                 return EntityModel.of(item,
                                 linkTo(methodOn(SpendingItemController.class).one(email, bookId,
-                                                item.getId(), null, null)).withSelfRel(),
+                                                item.getId(), null, null, null)).withSelfRel(),
                                 linkTo(methodOn(SpendingItemController.class).all(email, bookId,
-                                                null, null, null, null)).withRel("items"));
+                                                null, null, null, null, null)).withRel("items"));
         }
 }
