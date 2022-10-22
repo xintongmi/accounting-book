@@ -21,12 +21,24 @@ services:
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=accountingbook
     volumes:
-      - db:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - accounting-book-service-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=123456
     networks:
       - accounting-book-service-network
 
 volumes:
-  db:
+  db-data:
     driver: local
 
 networks:
