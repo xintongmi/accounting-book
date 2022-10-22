@@ -1,0 +1,34 @@
+services:
+  spring-boot:
+    image: public.ecr.aws/v0z4u2z1/accounting-book:1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - spring.datasource.username=admin
+      - spring.datasource.password=123456
+      - spring.datasource.url=jdbc:postgresql://postgres:5432/accountingbook?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    networks:
+      - accounting-book-service-network
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=accountingbook
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - accounting-book-service-network
+
+volumes:
+  db:
+    driver: local
+
+networks:
+  accounting-book-service-network:
+    driver: bridge
