@@ -6,9 +6,10 @@ services:
     depends_on:
       - postgres
     environment:
-      - spring.datasource.username=admin
-      - spring.datasource.password=123456
-      - spring.datasource.url=jdbc:postgresql://postgres:5432/accountingbook?useSSL=false&useUnicode=yes&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USER=admin
+      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_HOST=postgres:5432
+      - ALLOWED_ORIGINS=http://localhost:4200
     networks:
       - accounting-book-service-network
 
