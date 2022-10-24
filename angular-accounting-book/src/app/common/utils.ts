@@ -4,8 +4,8 @@ import { environment } from 'src/environments/environment';
 export function getBackendBaseUrl() {
   if (environment.production) {
     // return 'http://api.xintongTheCoder.com';
-    return 'http://localhost:8080/api';
+    return 'http://34.68.21.45:8080/api';
   } else {
-    return 'http://localhost:8080/api';
+    return 'http://34.68.21.45:8080/api';
   }
 }

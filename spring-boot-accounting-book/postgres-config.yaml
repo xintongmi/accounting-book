@@ -1,0 +1,10 @@
+# ConfigMap: Postgres endpoint
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  postgres-host: postgres-service:5432
+  pgdata: /var/lib/postgresql/data/pgdata
+  postgres-db: accountingbook
+  allowed-origins: http://localhost:4200
