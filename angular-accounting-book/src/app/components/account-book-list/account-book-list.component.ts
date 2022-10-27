@@ -13,6 +13,7 @@ import { UpdateBookDialogComponent } from '../update-book-dialog/update-book-dia
 })
 export class AccountBookListComponent implements OnInit {
   accountBooks: AccountBook[] = [];
+  isLoading = false;
 
   @ViewChild('deleteConfirmDialog')
   deleteConfirmDialog!: TemplateRef<any>;
@@ -30,8 +31,10 @@ export class AccountBookListComponent implements OnInit {
   }
 
   listAccountBooks() {
+    this.isLoading = true;
     this.accountBookService.getAccountBookList().subscribe((data) => {
       this.accountBooks = data.accountBooks;
+      this.isLoading = false;
     });
   }
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spring-boot
-          image: gcr.io/project-accounting-book/accounting-book:1.1
+          image: gcr.io/project-accounting-book/accounting-book:1.0
           ports:
             - containerPort: 8080
           env:
