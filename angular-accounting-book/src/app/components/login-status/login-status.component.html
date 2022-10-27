@@ -1,13 +1,21 @@
-<div class="login-status">
-  <div *ngIf="isAuthenticated && userFullName" class="login-status-greeting">
-    Welcome back {{ userFullName }}
-  </div>
-
-  <button mat-icon-botton *ngIf="!isAuthenticated" routerLink="/login">
-    <mat-icon>login</mat-icon>
-  </button>
-
-  <button mat-icon-botton *ngIf="isAuthenticated" (click)="logout()">
-    <mat-icon>logout</mat-icon>
-  </button>
+<div *ngIf="isAuthenticated && userName" class="login-status-greeting">
+  Welcome back {{ userName }}
 </div>
+
+<button
+  mat-raised-button
+  *ngIf="!isAuthenticated"
+  routerLink="/login"
+  class="login-logout-button"
+>
+  SIGN IN
+</button>
+
+<button
+  mat-raised-button
+  *ngIf="isAuthenticated"
+  (click)="logout()"
+  class="login-logout-button"
+>
+  SIGN OUT
+</button>

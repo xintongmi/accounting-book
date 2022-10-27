@@ -40,6 +40,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LandingComponent } from './components/landing/landing.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 
@@ -81,6 +82,7 @@ const oktaAuth = new OktaAuth(oktaConfig);
     MatNativeDateModule,
     MatSnackBarModule,
     MatToolbarModule,
+    MatProgressSpinnerModule,
     OktaAuthModule,
   ],
   providers: [

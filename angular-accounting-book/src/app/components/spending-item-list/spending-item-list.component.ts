@@ -17,6 +17,7 @@ import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dia
 })
 export class SpendingItemListComponent implements OnInit {
   dataSource: SpendingItem[] = [];
+  isLoading = false;
   bookId = 0;
   bookName = '';
   displayedColumns: String[] = [
@@ -95,6 +96,7 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTable() {
+    this.isLoading = true;
     this.spendingItemService
       .getSpendingItemList(
         this.bookId,
@@ -110,6 +112,7 @@ export class SpendingItemListComponent implements OnInit {
     return (data: any) => {
       this.dataSource = data.spendingItems;
       this.length = data.page.totalElements;
+      this.isLoading = false;
     };
   }
 

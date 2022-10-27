@@ -1,11 +1,14 @@
 <!-- TOP TOOLBAR -->
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" class="toolbar">
   <span>Family Spending Book</span>
   <span class="toolbar-spacer"></span>
-  <app-login-status></app-login-status>
+  <app-login-status class="login-status"></app-login-status>
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
-<div class="card-container">
+<div *ngIf="isLoading" class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
+<div *ngIf="!isLoading" class="card-container">
   <div *ngFor="let accountBook of accountBooks">
     <mat-card
       routerLink="/books/{{ accountBook.id }}/items"
