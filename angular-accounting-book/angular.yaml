@@ -28,11 +28,10 @@ metadata:
     app: angular
   name: angular-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: angular
   ports:
-    - name: angular-service-port
+    - protocol: TCP
       port: 80
       targetPort: 80
-      protocol: TCP
