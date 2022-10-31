@@ -8,15 +8,27 @@ metadata:
     # This enables HTTP connections from Internet clients
     kubernetes.io/ingress.allow-http: "true"
     # This tells Google Cloud to associate the External Load Balancer with the static IP
-    kubernetes.io/ingress.global-static-ip-name: web-ip
+    # kubernetes.io/ingress.global-static-ip-name: web-ip
     cert-manager.io/issuer: letsencrypt-production
 spec:
   tls:
     - secretName: web-ssl
       hosts:
-        - www.xintongthecoder.com
-  defaultBackend:
-    service:
-      name: angular-service
-      port:
-        number: 80
+        - "www.xintongthecoder.com"
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: angular-service
+                port:
+                  number: 80
+          - pathType: Prefix
+            path: /api
+            backend:
+              service:
+                name: spring-boot-service
+                port:
+                  number: 8080

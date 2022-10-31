@@ -7,4 +7,4 @@ data:
   postgres-host: postgres-service:5432
   pgdata: /var/lib/postgresql/data/pgdata
   postgres-db: accountingbook
-  allowed-origins: http://localhost:4200
+  allowed-origins: https://www.xintongthecoder.com
