@@ -43,13 +43,4 @@ public class AccountBook {
     @JsonIgnore // To ignore the logical property used in serialization and deserialization
     private Account account;
 
-    public void addItem(SpendingItem item) {
-        if (item != null) {
-            if (spendingItems.isEmpty()) {
-                spendingItems = new ArrayList<>();
-            }
-            spendingItems.add(item);
-            item.setBook(this);
-        }
-    }
 }

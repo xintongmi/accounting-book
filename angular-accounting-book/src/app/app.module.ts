@@ -3,11 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
-import {
-  OktaAuthModule,
-  OktaCallbackComponent,
-  OKTA_CONFIG,
-} from '@okta/okta-angular';
+import { OktaAuthModule, OKTA_CONFIG } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { APP_CONFIG, DEV_APP_CONFIG } from './config/app-config';
 
