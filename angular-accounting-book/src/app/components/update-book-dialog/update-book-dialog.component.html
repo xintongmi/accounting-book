@@ -1,4 +1,6 @@
 <div class="dialog-content">
+  <h1 mat-dialog-title *ngIf="!hasExistingBook">Create Book</h1>
+  <h1 mat-dialog-title *ngIf="hasExistingBook">Modify Book</h1>
   <form [formGroup]="dialogForm">
     <mat-form-field hintLabel="Max 30 characters" appearance="fill">
       <mat-label>Book Name </mat-label>
@@ -8,7 +10,7 @@
   </form>
 </div>
 
-<div mat-dialog-actions>
+<div mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
   <button mat-button (click)="onSave()">Save</button>
 </div>

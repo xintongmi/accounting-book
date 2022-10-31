@@ -10,12 +10,14 @@ import { AccountBook } from 'src/app/data-types';
 })
 export class UpdateBookDialogComponent {
   dialogForm: FormGroup;
+  hasExistingBook = false;
 
   constructor(
     private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<UpdateBookDialogComponent, AccountBook>,
     @Inject(MAT_DIALOG_DATA) private readonly data: { book: AccountBook }
   ) {
+    this.hasExistingBook = this.data.book !== undefined;
     this.dialogForm = formBuilder.group({
       name: [this.data.book?.name, Validators.required],
     });
