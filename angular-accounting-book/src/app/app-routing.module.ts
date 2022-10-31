@@ -41,8 +41,7 @@ const routes: Routes = [
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLoginPage },
   },
-  // { path: '', redirectTo: '/books', pathMatch: 'full' },
-  // { path: '**', redirectTo: '/books', pathMatch: 'full' },
+  { path: '**', redirectTo: '/books', pathMatch: 'full' },
 ];
 
 @NgModule({
