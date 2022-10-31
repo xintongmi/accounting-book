@@ -16,9 +16,18 @@ spec:
     spec:
       containers:
         - name: spring-boot
-          image: gcr.io/project-accounting-book/accounting-book:1.0
+          image: gcr.io/project-accounting-book/spring-boot-accounting-book:1.0
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
           env:
             - name: SPRING_DATASOURCE_USER
               valueFrom:
@@ -44,9 +53,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: spring-boot
   name: spring-boot-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: spring-boot
   ports:
