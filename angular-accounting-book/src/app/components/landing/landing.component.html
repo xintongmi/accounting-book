@@ -1,7 +1,9 @@
 <!-- TOP TOOLBAR -->
 <mat-toolbar color="primary" class="toolbar">
   <app-login-status class="login-status"></app-login-status>
-  <button mat-raised-button>TRIAL ACCOUNT</button>
+  <button mat-raised-button (click)="signinWithTrialAccount()">
+    TRIAL ACCOUNT
+  </button>
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
 <img src="assets/images/landing-page.jpg" class="landing-page" />
