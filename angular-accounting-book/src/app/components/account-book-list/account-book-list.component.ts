@@ -40,8 +40,8 @@ export class AccountBookListComponent implements OnInit {
 
   openEditBookDialog(existingBook?: AccountBook) {
     const dialogRef = this.dialog.open(UpdateBookDialogComponent, {
-      width: '500px',
-      height: '400px',
+      width: '300px',
+      height: '250px',
       data: {
         book: existingBook,
       },
