@@ -19,7 +19,7 @@ export class AccountBookService {
   ) {}
 
   getBookUrl(id?: number): Observable<string> {
-    return this.accountService.getAccountBaseUrl().pipe(
+    return this.accountService.getAccountBaseUrl$().pipe(
       map((accountBaseUrl) => {
         if (id) {
           return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${id}`;

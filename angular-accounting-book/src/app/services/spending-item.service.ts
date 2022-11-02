@@ -21,7 +21,7 @@ export class SpendingItemService {
   ) {}
 
   getUrl(ids: { bookId?: number; itemId?: number }): Observable<string> {
-    return this.accountService.getAccountBaseUrl().pipe(
+    return this.accountService.getAccountBaseUrl$().pipe(
       map((accountBaseUrl) => {
         if (ids.bookId) {
           return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${ids.bookId}/${ApiEntitySegments.ITEMS}`;
