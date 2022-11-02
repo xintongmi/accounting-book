@@ -23,7 +23,7 @@ export class AccountService {
     );
   }
 
-  getAccountBaseUrl(): Observable<string> {
+  getAccountBaseUrl$(): Observable<string> {
     return this.getAccountEmail$().pipe(
       map(
         (userEmail) =>
@@ -32,13 +32,13 @@ export class AccountService {
     );
   }
 
-  getUserName(): Observable<string> {
+  getUserName$(): Observable<string> {
     return from(this.oktaAuth.getUser()).pipe(
       map((userClaim) => userClaim.name!)
     );
   }
 
-  getAuthenticateStatus(): Observable<boolean> {
+  getAuthenticateStatus$(): Observable<boolean> {
     return from(
       this.oktaAuthService.authState$.pipe(
         map((result) => result.isAuthenticated!)

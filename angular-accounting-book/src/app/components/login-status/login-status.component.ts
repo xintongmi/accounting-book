@@ -23,13 +23,13 @@ export class LoginStatusComponent implements OnInit {
   }
 
   loadAuthenticateStatus() {
-    this.accountService.getAuthenticateStatus().subscribe((result) => {
+    this.accountService.getAuthenticateStatus$().subscribe((result) => {
       this.isAuthenticated = result;
     });
   }
 
   loadUserName() {
-    this.accountService.getUserName().subscribe((result) => {
+    this.accountService.getUserName$().subscribe((result) => {
       this.userName = result;
     });
   }

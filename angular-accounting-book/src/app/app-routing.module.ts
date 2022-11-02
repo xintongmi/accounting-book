@@ -6,6 +6,7 @@ import { OktaAuthGuard, OktaCallbackComponent } from '@okta/okta-angular';
 import { LandingComponent } from './components/landing/landing.component';
 import { LoginComponent } from './components/login/login.component';
 import { OktaAuth } from '@okta/okta-auth-js';
+import { LandingGuardService } from './services/landing-guard.service';
 
 function sendToLandingPage(oktaAuth: OktaAuth, injector: Injector) {
   const router = injector.get(Router);
@@ -24,7 +25,11 @@ const routes: Routes = [
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLandingPage },
   },
-  { path: 'landing', component: LandingComponent },
+  {
+    path: 'landing',
+    component: LandingComponent,
+    canActivate: [LandingGuardService],
+  },
   { path: 'login/callback', component: OktaCallbackComponent },
   { path: 'login', component: LoginComponent },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
