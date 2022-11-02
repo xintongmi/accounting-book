@@ -1,9 +1,17 @@
 <!-- TOP TOOLBAR -->
 <mat-toolbar color="primary" class="toolbar">
+  <div>Family Spending Book</div>
+  <span class="toolbar-spacer"></span>
   <app-login-status class="login-status"></app-login-status>
   <button mat-raised-button (click)="signinWithTrialAccount()">
     TRIAL ACCOUNT
   </button>
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
-<img src="assets/images/landing-page.jpg" class="landing-page" />
+<!-- CAROUSEL -->
+<mdb-carousel [controls]="true" [indicators]="true" class="carousel-container">
+  <mdb-carousel-item *ngFor="let slide of slides" class="carousel-item">
+    <img [src]="slide.src" class="d-block w-100" alt="..." loading="lazy" />
+  </mdb-carousel-item>
+</mdb-carousel>
+<!-- END CAROUSEL -->

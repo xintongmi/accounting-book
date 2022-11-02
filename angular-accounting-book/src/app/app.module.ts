@@ -37,6 +37,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MdbCarouselModule } from 'mdb-angular-ui-kit/carousel';
 import { LandingComponent } from './components/landing/landing.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { environment } from 'src/environments/environment';
@@ -82,6 +83,7 @@ const oktaAuth = new OktaAuth(oktaConfig);
     MatSnackBarModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
+    MdbCarouselModule,
     OktaAuthModule,
   ],
   providers: [

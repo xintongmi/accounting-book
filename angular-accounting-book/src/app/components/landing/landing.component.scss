@@ -1,12 +1,27 @@
-.toolbar {
+:host {
+  height: 100%;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
 
-  .login-status {
-    margin-right: 20px;
+  .toolbar {
+    display: flex;
+    justify-content: space-between;
+
+    .toolbar-spacer {
+      flex: 10 1 auto;
+    }
+
+    .login-status {
+      margin-right: 20px;
+    }
   }
-}
 
-.landing-page {
-  width: 100%;
+  .carousel-container {
+    flex: auto;
+
+    .carousel-item {
+      flex: auto;
+      height: 100%;
+    }
+  }
 }
