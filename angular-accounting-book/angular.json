@@ -32,6 +32,11 @@
               "src/styles.scss",
               "node_modules/@okta/okta-signin-widget/dist/css/okta-sign-in.min.css"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./node_modules"
+              ]
+            },
             "scripts": []
           },
           "configurations": {
