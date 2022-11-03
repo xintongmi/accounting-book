@@ -12,7 +12,7 @@ export enum ApiEntitySegments {
 
 export interface SpendingItem {
   id: number;
-  category: string;
+  category: Category;
   description: string;
   merchant: string;
   amount: number;
