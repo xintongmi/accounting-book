@@ -10,7 +10,7 @@ import { AccountService } from 'src/app/services/account.service';
 })
 export class LoginStatusComponent implements OnInit {
   isAuthenticated = false;
-  userName = '';
+  userName?: string;
 
   constructor(
     @Inject(OKTA_AUTH) private readonly oktaAuth: OktaAuth,

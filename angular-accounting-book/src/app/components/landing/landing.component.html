@@ -9,9 +9,11 @@
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
 <!-- CAROUSEL -->
-<mdb-carousel [controls]="true" [indicators]="true" class="carousel-container">
-  <mdb-carousel-item *ngFor="let slide of slides" class="carousel-item">
-    <img [src]="slide.src" class="d-block w-100" alt="..." loading="lazy" />
-  </mdb-carousel-item>
-</mdb-carousel>
+<div class="carousel-container">
+  <mdb-carousel [controls]="true" [indicators]="true">
+    <mdb-carousel-item *ngFor="let slide of slides" class="carousel-item">
+      <img [src]="slide.src" class="demo-image" alt="..." loading="lazy" />
+    </mdb-carousel-item>
+  </mdb-carousel>
+</div>
 <!-- END CAROUSEL -->

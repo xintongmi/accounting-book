@@ -5,6 +5,7 @@
 
   .toolbar {
     display: flex;
+    flex: 0 0 auto;
     justify-content: space-between;
 
     .toolbar-spacer {
@@ -21,6 +22,24 @@
 
     .carousel-item {
       flex: auto;
+      height: 100%;
+    }
+  }
+
+  .demo-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  mdb-carousel {
+    height: 100%;
+  }
+
+  ::ng-deep {
+    .carousel-inner,
+    .carousel-item,
+    .carousel.slide {
       height: 100%;
     }
   }

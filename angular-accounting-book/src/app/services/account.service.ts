@@ -4,8 +4,8 @@ import { Inject } from '@angular/core';
 import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { ApiEntitySegments } from '../data-types';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -16,10 +16,11 @@ export class AccountService {
     private readonly oktaAuthService: OktaAuthStateService
   ) {}
 
-  getAccountEmail$(): Observable<string> {
+  getAccountEmail$(): Observable<string | undefined> {
     // from(Promise) to Observable
     return from(this.oktaAuth.getUser()).pipe(
-      map((userClaim) => userClaim.email!)
+      map((userClaim) => userClaim.email!),
+      catchError(() => of(undefined))
     );
   }
 
@@ -32,9 +33,10 @@ export class AccountService {
     );
   }
 
-  getUserName$(): Observable<string> {
+  getUserName$(): Observable<string | undefined> {
     return from(this.oktaAuth.getUser()).pipe(
-      map((userClaim) => userClaim.name!)
+      map((userClaim) => userClaim.name!),
+      catchError(() => of(undefined))
     );
   }
 
