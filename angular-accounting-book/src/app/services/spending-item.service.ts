@@ -8,7 +8,6 @@ import {
   ListSpendingItemResponse,
   SpendingItem,
 } from '../data-types';
-import { AccountBookService } from './account-book.service';
 import { AccountService } from './account.service';
 
 @Injectable({
@@ -20,18 +19,21 @@ export class SpendingItemService {
     private readonly accountService: AccountService
   ) {}
 
-  getUrl(ids: { bookId?: number; itemId?: number }): Observable<string> {
+  getUrl(id: { bookId: number } | { itemId: number }): Observable<string> {
     return this.accountService.getAccountBaseUrl$().pipe(
       map((accountBaseUrl) => {
-        if (ids.bookId) {
-          return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${ids.bookId}/${ApiEntitySegments.ITEMS}`;
+        if (this.hasBookId(id)) {
+          return `${accountBaseUrl}/${ApiEntitySegments.BOOKS}/${id.bookId}/${ApiEntitySegments.ITEMS}`;
         }
-        if (ids.itemId) {
-          return `${accountBaseUrl}/${ApiEntitySegments.ITEMS}/${ids.itemId}`;
-        }
-        throw new Error('Missing ids');
+        return `${accountBaseUrl}/${ApiEntitySegments.ITEMS}/${id.itemId}`;
       })
     );
+  }
+
+  private hasBookId(
+    id: { bookId: number } | { itemId: number }
+  ): id is { bookId: number } {
+    return (id as { bookId: number }).bookId !== undefined;
   }
 
   getSpendingItemList(
@@ -41,7 +43,6 @@ export class SpendingItemService {
     category: Category,
     text: string
   ): Observable<ListSpendingItemResponse> {
-    let searchUrl = '';
     const params = [];
     params.push(`page=${pageIndex}`);
     params.push(`size=${pageSize}`);
