@@ -19,7 +19,7 @@ export class SpendingItemService {
     private readonly accountService: AccountService
   ) {}
 
-  getUrl(id: { bookId: number } | { itemId: number }): Observable<string> {
+  getUrl$(id: { bookId: number } | { itemId: number }): Observable<string> {
     return this.accountService.getAccountBaseUrl$().pipe(
       map((accountBaseUrl) => {
         if (this.hasBookId(id)) {
@@ -36,7 +36,7 @@ export class SpendingItemService {
     return (id as { bookId: number }).bookId !== undefined;
   }
 
-  getSpendingItemList(
+  getSpendingItemList$(
     bookId: number,
     pageIndex: number,
     pageSize: number,
@@ -53,33 +53,53 @@ export class SpendingItemService {
       params.push(`text=${text}`);
     }
     const suffix = params.join('&');
-    return this.getUrl({ bookId }).pipe(
+    return this.getUrl$({ bookId }).pipe(
       map((url) => `${url}?${suffix}`),
       switchMap((url) => this.httpClient.get<Response>(url)),
-      map((response) => ({
-        spendingItems: response._embedded?.items ?? [],
-        page: response.page,
-      }))
+      map(
+        (response): ListSpendingItemResponse => ({
+          page: response.page,
+          spendingItems: (response._embedded?.items ?? []).map((rawItem) => ({
+            id: rawItem.id,
+            category: rawItem.category,
+            description: rawItem.description,
+            merchant: rawItem.merchant,
+            amount: rawItem.amount,
+            date: rawItem.date,
+            bookId: rawItem.bookId,
+          })),
+        })
+      )
     );
   }
 
-  addItem(newItem: SpendingItem) {
-    return this.getUrl({ bookId: newItem.bookId }).pipe(
+  addItem$(newItem: SpendingItem) {
+    return this.getUrl$({ bookId: newItem.bookId }).pipe(
       switchMap((url) => this.httpClient.post<SpendingItem>(url, newItem))
     );
   }
 
-  updateItem(item: SpendingItem) {
-    return this.getUrl({ itemId: item.id }).pipe(
+  updateItem$(item: SpendingItem) {
+    return this.getUrl$({ itemId: item.id }).pipe(
       switchMap((url) => this.httpClient.put<SpendingItem>(url, item))
     );
   }
 
-  deleteItem(item: SpendingItem) {
-    return this.getUrl({ itemId: item.id }).pipe(
+  deleteItem$(item: SpendingItem) {
+    return this.getUrl$({ itemId: item.id }).pipe(
       switchMap((url) => this.httpClient.delete(url))
     );
   }
+}
+
+declare interface RawSpendingItem {
+  id: number;
+  category: Category;
+  description: string;
+  merchant: string;
+  amount: number;
+  date: Date;
+  bookId: number;
 }
 
 declare interface Response {

@@ -17,18 +17,19 @@
       <mat-card-title>
         {{ accountBook.name }}
       </mat-card-title>
-      <mat-card-content class="book-desc"> </mat-card-content>
 
       <mat-card-actions align="end">
         <button
           mat-button
           (click)="$event.stopPropagation(); openEditBookDialog(accountBook)"
+          class="card-button"
         >
           EDIT
         </button>
         <button
           mat-button
           (click)="$event.stopPropagation(); openDeleteBookDialog(accountBook)"
+          class="card-button"
         >
           DELETE
         </button>
