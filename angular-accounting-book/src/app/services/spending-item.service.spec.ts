@@ -50,7 +50,7 @@ fdescribe('SpendingItemService', () => {
   });
 
   it('#getUrl with bookId should return correct url', (done: DoneFn) => {
-    const result$ = service.getUrl({ bookId: 1 });
+    const result$ = service.getUrl$({ bookId: 1 });
     result$.subscribe((v) => {
       expect(v).toEqual('baseUrl/books/1/items');
       done();
@@ -58,7 +58,7 @@ fdescribe('SpendingItemService', () => {
   });
 
   it('#getUrl with itemId should return correct url', (done: DoneFn) => {
-    const result$ = service.getUrl({ itemId: 1 });
+    const result$ = service.getUrl$({ itemId: 1 });
     result$.subscribe((v) => {
       expect(v).toEqual('baseUrl/items/1');
       done();
@@ -102,7 +102,7 @@ fdescribe('SpendingItemService', () => {
       },
     };
     mockHttpClient.get.and.returnValue(of(mockResp));
-    const result$ = service.getSpendingItemList(
+    const result$ = service.getSpendingItemList$(
       1,
       0,
       10,
@@ -135,7 +135,7 @@ fdescribe('SpendingItemService', () => {
   });
 
   it('#addItem should send correct request', (done: DoneFn) => {
-    const result$ = service.addItem(newItem);
+    const result$ = service.addItem$(newItem);
     result$.subscribe((v) => {
       expect(mockHttpClient.post).toHaveBeenCalledWith(
         'baseUrl/books/1/items',
@@ -146,7 +146,7 @@ fdescribe('SpendingItemService', () => {
   });
 
   it('#updateItem should send correct request', (done: DoneFn) => {
-    const result$ = service.updateItem(newItem);
+    const result$ = service.updateItem$(newItem);
     result$.subscribe((v) => {
       expect(mockHttpClient.put).toHaveBeenCalledWith(
         'baseUrl/items/0',
@@ -157,7 +157,7 @@ fdescribe('SpendingItemService', () => {
   });
 
   it('#deleteItem should send correct request', (done: DoneFn) => {
-    const result$ = service.deleteItem(newItem);
+    const result$ = service.deleteItem$(newItem);
     result$.subscribe((v) => {
       expect(mockHttpClient.delete).toHaveBeenCalledWith('baseUrl/items/0');
       done();

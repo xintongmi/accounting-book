@@ -32,17 +32,14 @@
     flex: auto;
 
     .account-book-card {
-      height: 240px;
-      width: 160px;
-      display: flex;
       background-color: #eeeeee;
+      height: 250px;
+      width: 180px;
+      display: flex;
       flex-direction: column;
+      justify-content: space-between;
       margin: 20px;
       cursor: pointer;
-
-      .book-desc {
-        flex-grow: 1;
-      }
     }
 
     .account-book-add-card {
