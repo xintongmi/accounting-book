@@ -32,7 +32,7 @@ export class AccountBookListComponent implements OnInit {
 
   listAccountBooks() {
     this.isLoading = true;
-    this.accountBookService.getAccountBookList().subscribe((data) => {
+    this.accountBookService.getAccountBookList$().subscribe((data) => {
       this.accountBooks = data.accountBooks;
       this.isLoading = false;
     });
@@ -52,8 +52,8 @@ export class AccountBookListComponent implements OnInit {
         return;
       }
       const response$ = existingBook
-        ? this.accountBookService.updateBook(book)
-        : this.accountBookService.addBook(book);
+        ? this.accountBookService.updateBook$(book)
+        : this.accountBookService.addBook$(book);
       response$.subscribe(() => {
         this.refreshBookList();
         this.snackBar.open(
@@ -77,7 +77,7 @@ export class AccountBookListComponent implements OnInit {
   deleteBook() {
     if (this.pendingDeleteBook) {
       this.accountBookService
-        .deleteBook(this.pendingDeleteBook)
+        .deleteBook$(this.pendingDeleteBook)
         .subscribe(() => {
           this.refreshBookList();
           this.snackBar.open('Successfully deleted!', undefined, {

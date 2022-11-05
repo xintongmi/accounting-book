@@ -17,7 +17,7 @@ import { ApiEntitySegments } from '../data-types';
 export class AuthInterceptorService implements HttpInterceptor {
   constructor(@Inject(OKTA_AUTH) private readonly oktaAuth: OktaAuth) {}
 
-  intercept(
+  intercept$(
     request: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {

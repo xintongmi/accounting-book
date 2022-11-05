@@ -59,7 +59,7 @@ export class SpendingItemListComponent implements OnInit {
       this.refreshTable();
     });
     this.accountBookService
-      .getAccountBook(this.bookId)
+      .getAccountBook$(this.bookId)
       .subscribe((response) => {
         this.bookName = response.accountBooks[0].name;
       });
@@ -98,7 +98,7 @@ export class SpendingItemListComponent implements OnInit {
   refreshTable() {
     this.isLoading = true;
     this.spendingItemService
-      .getSpendingItemList(
+      .getSpendingItemList$(
         this.bookId,
         this.pageIndex,
         this.pageSize,
@@ -131,8 +131,8 @@ export class SpendingItemListComponent implements OnInit {
       }
       item.bookId = this.bookId;
       const response$ = existingItem
-        ? this.spendingItemService.updateItem(item)
-        : this.spendingItemService.addItem(item);
+        ? this.spendingItemService.updateItem$(item)
+        : this.spendingItemService.addItem$(item);
 
       response$.subscribe(() => {
         this.refreshTable();
@@ -153,7 +153,7 @@ export class SpendingItemListComponent implements OnInit {
   deleteItem() {
     if (this.pendingDeleteItem) {
       this.spendingItemService
-        .deleteItem(this.pendingDeleteItem)
+        .deleteItem$(this.pendingDeleteItem)
         .subscribe(() => {
           this.refreshTable();
           this.snackBar.open('Successfully deleted!', undefined, {
