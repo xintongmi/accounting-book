@@ -1,9 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { OKTA_AUTH } from '@okta/okta-angular';
-import { OktaAuth } from '@okta/okta-auth-js';
-import { from } from 'rxjs';
-
 import { LandingGuardService } from './landing-guard.service';
 
 describe('AuthGuardService', () => {

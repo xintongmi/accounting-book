@@ -1,13 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import {
-  Category,
-  ListSpendingItemResponse,
-  SpendingItem,
-} from '../data-types';
+import { Category, SpendingItem } from '../data-types';
 import { AccountService } from './account.service';
-
 import { SpendingItemService } from './spending-item.service';
 
 describe('SpendingItemService', () => {
@@ -69,7 +64,7 @@ describe('SpendingItemService', () => {
     });
   });
 
-  fit('#getSpendingItemList should send correct request and return correct response', (done: DoneFn) => {
+  it('#getSpendingItemList should send correct request and return correct response', (done: DoneFn) => {
     const mockResp = {
       _embedded: {
         items: [
@@ -80,6 +75,7 @@ describe('SpendingItemService', () => {
             merchant: 'Safeway',
             date,
             amount: 12,
+            bookId: 1,
             _links: {
               self: {
                 href: 'somelink',
@@ -126,16 +122,7 @@ describe('SpendingItemService', () => {
             merchant: 'Safeway',
             date,
             amount: 12,
-            _links: {
-              self: {
-                href: 'somelink',
-                templated: true,
-              },
-              items: {
-                href: 'somelink',
-                templated: true,
-              },
-            },
+            bookId: 1,
           },
         ],
         page: {
@@ -144,7 +131,7 @@ describe('SpendingItemService', () => {
           totalPages: 1,
           number: 0,
         },
-      } as unknown as ListSpendingItemResponse);
+      });
       done();
     });
   });
