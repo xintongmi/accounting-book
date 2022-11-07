@@ -3,10 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { Category, SpendingItem } from '../data-types';
 import { AccountService } from './account.service';
-
 import { SpendingItemService } from './spending-item.service';
 
-fdescribe('SpendingItemService', () => {
+describe('SpendingItemService', () => {
   let service: SpendingItemService;
   let mockAccountService: any;
   let mockHttpClient: any;
@@ -65,7 +64,7 @@ fdescribe('SpendingItemService', () => {
     });
   });
 
-  it('#getSpendingItemList should send correct request', (done: DoneFn) => {
+  it('#getSpendingItemList should send correct request and return correct response', (done: DoneFn) => {
     const mockResp = {
       _embedded: {
         items: [
@@ -74,8 +73,9 @@ fdescribe('SpendingItemService', () => {
             category: 'GROCERY',
             description: 'Grocery',
             merchant: 'Safeway',
-            date: '2022-10-03',
+            date,
             amount: 12,
+            bookId: 1,
             _links: {
               self: {
                 href: 'somelink',
@@ -115,20 +115,22 @@ fdescribe('SpendingItemService', () => {
       );
       expect(v).toEqual({
         spendingItems: [
-          Object({
+          {
             id: 204,
-            category: 'GROCERY',
+            category: Category.GROCERY,
             description: 'Grocery',
             merchant: 'Safeway',
-            date: '2022-10-03',
+            date,
             amount: 12,
-            _links: Object({
-              self: Object({ href: 'somelink', templated: true }),
-              items: Object({ href: 'somelink', templated: true }),
-            }),
-          }),
+            bookId: 1,
+          },
         ],
-        page: Object({ size: 10, totalElements: 1, totalPages: 1, number: 0 }),
+        page: {
+          size: 10,
+          totalElements: 1,
+          totalPages: 1,
+          number: 0,
+        },
       });
       done();
     });
