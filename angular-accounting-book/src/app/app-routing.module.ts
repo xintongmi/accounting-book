@@ -27,22 +27,39 @@ const routes: Routes = [
   },
   {
     path: 'landing',
-    component: LandingComponent,
+    loadChildren: () =>
+      import('./components/landing/landing.module').then(
+        (m) => m.LandingModule
+      ),
+    // component: LandingComponent,
     canActivate: [LandingGuardService],
   },
   { path: 'login/callback', component: OktaCallbackComponent },
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./components/login/login.module').then((m) => m.LoginModule),
+    // component: LoginComponent
+  },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
   // access the routes directly without being authenticated
   {
     path: 'books',
-    component: AccountBookListComponent,
+    loadChildren: () =>
+      import('./components/account-book-list/account-book-list.module').then(
+        (m) => m.AccountBookListModule
+      ),
+    // component: AccountBookListComponent,
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLoginPage },
   },
   {
     path: 'books/:id/items',
-    component: SpendingItemListComponent,
+    loadChildren: () =>
+      import('./components/spending-item-list/spending-item-list.module').then(
+        (m) => m.SpendingItemListModule
+      ),
+    // component: SpendingItemListComponent,
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLoginPage },
   },
