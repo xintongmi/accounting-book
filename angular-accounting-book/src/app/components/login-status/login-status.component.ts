@@ -1,4 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Injector, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { OKTA_AUTH } from '@okta/okta-angular';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { AccountService } from 'src/app/services/account.service';
@@ -14,7 +15,8 @@ export class LoginStatusComponent implements OnInit {
 
   constructor(
     @Inject(OKTA_AUTH) private readonly oktaAuth: OktaAuth,
-    private readonly accountService: AccountService
+    private readonly accountService: AccountService,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +38,8 @@ export class LoginStatusComponent implements OnInit {
 
   logout() {
     // Terminates the session with Okta and removes current tokens
-    this.oktaAuth.signOut();
-    this.userName = '';
+    this.oktaAuth.signOut().then(() => {
+      this.userName = '';
+    });
   }
 }
