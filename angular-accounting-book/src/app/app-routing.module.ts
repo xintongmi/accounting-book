@@ -1,10 +1,7 @@
 import { Injector, NgModule } from '@angular/core';
 import { Router, RouterModule, Routes } from '@angular/router';
 import { AccountBookListComponent } from './components/account-book-list/account-book-list.component';
-import { SpendingItemListComponent } from './components/spending-item-list/spending-item-list.component';
 import { OktaAuthGuard, OktaCallbackComponent } from '@okta/okta-angular';
-import { LandingComponent } from './components/landing/landing.component';
-import { LoginComponent } from './components/login/login.component';
 import { OktaAuth } from '@okta/okta-auth-js';
 import { LandingGuardService } from './services/landing-guard.service';
 
@@ -31,7 +28,6 @@ const routes: Routes = [
       import('./components/landing/landing.module').then(
         (m) => m.LandingModule
       ),
-    // component: LandingComponent,
     canActivate: [LandingGuardService],
   },
   { path: 'login/callback', component: OktaCallbackComponent },
@@ -39,7 +35,6 @@ const routes: Routes = [
     path: 'login',
     loadChildren: () =>
       import('./components/login/login.module').then((m) => m.LoginModule),
-    // component: LoginComponent
   },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
   // access the routes directly without being authenticated
@@ -49,7 +44,6 @@ const routes: Routes = [
       import('./components/account-book-list/account-book-list.module').then(
         (m) => m.AccountBookListModule
       ),
-    // component: AccountBookListComponent,
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLoginPage },
   },
@@ -59,7 +53,6 @@ const routes: Routes = [
       import('./components/spending-item-list/spending-item-list.module').then(
         (m) => m.SpendingItemListModule
       ),
-    // component: SpendingItemListComponent,
     canActivate: [OktaAuthGuard],
     data: { onAuthRequired: sendToLoginPage },
   },
