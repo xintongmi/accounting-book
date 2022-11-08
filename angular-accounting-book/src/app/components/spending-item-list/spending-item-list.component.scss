@@ -42,7 +42,7 @@
         justify-content: center;
       }
 
-      .item-list-container {
+      .item-list-table-container {
         display: flex;
         flex: auto;
         flex-direction: column;
@@ -54,8 +54,12 @@
         padding: 8px;
       }
 
-      .spending-item-table {
+      .item-list-table {
         margin: 24px;
+      }
+
+      .report-container {
+        margin: 8px;
       }
     }
   }
