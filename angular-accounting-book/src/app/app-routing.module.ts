@@ -35,7 +35,12 @@ const routes: Routes = [
     canActivate: [LandingGuardService],
   },
   { path: 'login/callback', component: OktaCallbackComponent },
-  { path: 'login', component: LoginComponent },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./components/login/login.module').then((m) => m.LoginModule),
+    // component: LoginComponent
+  },
   // [OktaAuthGuard] garantees no one can backdoor the routes or
   // access the routes directly without being authenticated
   {
