@@ -27,7 +27,7 @@
   }
 
   .demo-image {
-    height: 100%;
+    height: calc(100vh - 64px);
     width: 100%;
     object-fit: cover;
   }
