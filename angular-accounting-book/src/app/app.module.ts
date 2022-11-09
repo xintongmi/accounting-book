@@ -16,6 +16,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { environment } from 'src/environments/environment';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const oktaConfig = environment.production
   ? APP_CONFIG.oidc
@@ -33,6 +35,9 @@ const oktaAuth = new OktaAuth(oktaConfig);
     MatDialogModule,
     MatSnackBarModule,
     MatNativeDateModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [
     AccountBookService,
