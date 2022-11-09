@@ -13,9 +13,9 @@ export class UpdateBookDialogComponent {
   hasExistingBook = false;
 
   constructor(
-    private formBuilder: FormBuilder,
     public dialogRef: MatDialogRef<UpdateBookDialogComponent, AccountBook>,
-    @Inject(MAT_DIALOG_DATA) private readonly data: { book: AccountBook }
+    @Inject(MAT_DIALOG_DATA) private readonly data: { book: AccountBook },
+    formBuilder: FormBuilder
   ) {
     this.hasExistingBook = this.data.book !== undefined;
     this.dialogForm = formBuilder.group({
