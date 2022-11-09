@@ -4,7 +4,13 @@
   <form [formGroup]="dialogForm">
     <mat-form-field hintLabel="Max 30 characters" appearance="fill">
       <mat-label>Book Name </mat-label>
-      <input matInput #nameInput maxLength="30" formControlName="name" />
+      <input
+        matInput
+        #nameInput
+        maxLength="30"
+        formControlName="name"
+        autocomplete="off"
+      />
       <mat-hint align="end">{{ nameInput.value.length || 0 }}/30</mat-hint>
     </mat-form-field>
   </form>

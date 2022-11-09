@@ -2,7 +2,12 @@
   <form [formGroup]="dialogForm">
     <mat-form-field appearance="fill">
       <mat-label>Choose a date </mat-label>
-      <input matInput formControlName="date" [matDatepicker]="picker" />
+      <input
+        matInput
+        formControlName="date"
+        [matDatepicker]="picker"
+        autocomplete="off"
+      />
       <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -19,19 +24,31 @@
 
     <mat-form-field hintLabel="Max 100 characters" appearance="fill">
       <mat-label>Description </mat-label>
-      <input matInput #dInput maxLength="100" formControlName="description" />
+      <input
+        matInput
+        #dInput
+        maxLength="100"
+        formControlName="description"
+        autocomplete="off"
+      />
       <mat-hint align="end">{{ dInput.value.length || 0 }}/100</mat-hint>
     </mat-form-field>
 
     <mat-form-field hintLabel="Max 30 characters" appearance="fill">
       <mat-label>Merchant </mat-label>
-      <input matInput #mInput maxLength="30" formControlName="merchant" />
+      <input
+        matInput
+        #mInput
+        maxLength="30"
+        formControlName="merchant"
+        autocomplete="off"
+      />
       <mat-hint align="end">{{ mInput.value.length || 0 }}/30</mat-hint>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
       <mat-label>Amount </mat-label>
-      <input matInput formControlName="amount" />
+      <input matInput formControlName="amount" autocomplete="off" />
       <span matPrefix>$&nbsp;</span>
     </mat-form-field>
   </form>
