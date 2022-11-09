@@ -10,7 +10,7 @@
 <!-- END TOP TOOLBAR -->
 <!-- CAROUSEL -->
 <div class="carousel-container">
-  <mdb-carousel [controls]="true" [indicators]="true">
+  <mdb-carousel [controls]="true" [indicators]="true" [interval]="10000000">
     <mdb-carousel-item *ngFor="let slide of slides" class="carousel-item">
       <img [src]="slide.src" class="demo-image" alt="..." loading="lazy" />
     </mdb-carousel-item>
