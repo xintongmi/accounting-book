@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,36 +54,46 @@ class AccountingbookApplicationTests {
 	@MockBean
 	private AccountRepository accountRepository;
 
-	Account mockAccount = getAccount("test@test.com");
-	AccountBook mockBook = getAccountBook(1l, mockAccount, "mockBook");
-	SpendingItem mockItem1 = getSpendingItem(1l, mockBook, Category.GROCERY, "food", "safeway",
-			new Date(1664694000000L), 76.14F);
-	SpendingItem mockItem2 = getSpendingItem(2l, mockBook, Category.HOUSEHOLD, "cleanser", "amazon",
-			new Date(1664866800000L), 98.56F);
+	private Account mockAccount;
+	private AccountBook mockBook1;
+	private AccountBook mockBook2;
+	private SpendingItem mockItem1;
+	private SpendingItem mockItem2;
+	private Principal mockPrincipal;
+	private PageRequest mockPagerequest;
 
-	@BeforeAll
-	public void mockDataSetUp() {
-		mockAccount.setAccountBooks(Arrays.asList(mockBook));
-		mockBook.setSpendingItems(Arrays.asList(mockItem1, mockItem2));
+	@BeforeEach
+	public void setUp() {
+		mockAccount = getAccount("test@test.com");
+		mockBook1 = getAccountBook(1l, mockAccount, "mockBook1");
+		mockBook2 = getAccountBook(2l, mockAccount, "mockBook2");
+		mockItem1 = getSpendingItem(1l, mockBook1, Category.GROCERY, "food", "safeway",
+				new Date(1664694000000L), 76.14F);
+		mockItem2 = getSpendingItem(2l, mockBook1, Category.HOUSEHOLD, "cleanser", "amazon",
+				new Date(1664866800000L), 98.56F);
+		mockAccount.setAccountBooks(Arrays.asList(mockBook1, mockBook2));
+		mockBook1.setSpendingItems(Arrays.asList(mockItem1, mockItem2));
+
+		mockPrincipal = Mockito.mock(Principal.class);
+		Mockito.when(mockPrincipal.getName()).thenReturn(mockAccount.getEmail());
+
+		mockPagerequest = PageRequest.of(0, 10);
 	}
 
 	@Test
 	public void shouldReturnCorrectBook() throws Exception {
-		PageRequest mockPagerequest = PageRequest.of(0, 10);
 		Page<AccountBook> mockPagedBook =
-				new PageImpl<>(Arrays.asList(mockBook), mockPagerequest, 1);
-		Principal mockPrincipal = Mockito.mock(Principal.class);
+				new PageImpl<>(Arrays.asList(mockBook1), mockPagerequest, 1);
 
-		Mockito.when(mockPrincipal.getName()).thenReturn(mockAccount.getEmail());
-		Mockito.when(mockAccountBookRepository.findById(mockBook.getId()))
-				.thenReturn(Optional.of(mockBook));
-		Mockito.when(mockAccountBookRepository.findById(mockBook.getId(), mockPagerequest))
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId()))
+				.thenReturn(Optional.of(mockBook1));
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId(), mockPagerequest))
 				.thenReturn(mockPagedBook);
 		RequestBuilder requestBuilder =
 				MockMvcRequestBuilders.get("/api/accounts/test@test.com/books/1")
 						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON);
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
-		String expected = "{\"_embedded\":{\"books\":[{\"id\":1,\"name\":\"mockBook\",\"_links"
+		String expected = "{\"_embedded\":{\"books\":[{\"id\":1,\"name\":\"mockBook1\",\"_links"
 				+ "\":{\"self\":{\"href\":\"http://localhost/api/accounts/{email}/books/1{?page,"
 				+ "size}\",\"templated\":true},\"books\":{\"href\":\"http://localhost/api/accounts"
 				+ "/{email}/books{?page,size}\",\"templated\":true}}}]},\"_links\":{\"self\""
