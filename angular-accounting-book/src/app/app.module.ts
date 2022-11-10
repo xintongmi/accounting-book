@@ -18,6 +18,10 @@ import { AuthInterceptorService } from './services/auth-interceptor.service';
 import { environment } from 'src/environments/environment';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  NgxGoogleAnalyticsModule,
+  NgxGoogleAnalyticsRouterModule,
+} from 'ngx-google-analytics';
 
 const oktaConfig = environment.production
   ? APP_CONFIG.oidc
@@ -38,6 +42,8 @@ const oktaAuth = new OktaAuth(oktaConfig);
     MatFormFieldModule,
     ReactiveFormsModule,
     FormsModule,
+    NgxGoogleAnalyticsModule.forRoot('G-93VVBYWR0J'),
+    NgxGoogleAnalyticsRouterModule,
   ],
   providers: [
     AccountBookService,
