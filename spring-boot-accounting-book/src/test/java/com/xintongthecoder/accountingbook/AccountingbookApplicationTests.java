@@ -21,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -29,10 +30,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.xintongthecoder.accountingbook.controller.AccountBookController;
 import com.xintongthecoder.accountingbook.controller.SpendingItemController;
 import com.xintongthecoder.accountingbook.dao.AccountBookRepository;
 import com.xintongthecoder.accountingbook.dao.AccountRepository;
+import com.xintongthecoder.accountingbook.dao.SpendingItemRepository;
 import com.xintongthecoder.accountingbook.entity.Account;
 import com.xintongthecoder.accountingbook.entity.AccountBook;
 import com.xintongthecoder.accountingbook.entity.Category;
@@ -40,7 +41,7 @@ import com.xintongthecoder.accountingbook.entity.SpendingItem;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(value = AccountBookController.class)
+@WebMvcTest()
 @ComponentScan("com.xintongthecoder.accountingbook.modelAssembler")
 @AutoConfigureMockMvc(addFilters = false)
 class AccountingbookApplicationTests {
@@ -56,6 +57,9 @@ class AccountingbookApplicationTests {
 
 	@MockBean
 	private AccountRepository mockAccountRepository;
+
+	@MockBean
+	private SpendingItemRepository mockSpendingItemRepository;
 
 	private Account mockAccount;
 	private AccountBook mockBook1;
@@ -139,7 +143,7 @@ class AccountingbookApplicationTests {
 		Mockito.when(mockAccountRepository.findByEmail(mockAccount.getEmail()))
 				.thenReturn(mockAccount);
 		AccountBook newBook = getAccountBook(3l, mockAccount, "newBook");
-		String newBookJson = "{\"id\": \"-1\", \"name\": \"newBook\"}";
+		String newBookJson = "{\"id\": -1, \"name\": \"newBook\"}";
 
 		Mockito.when(mockAccountBookRepository.save(Mockito.any(AccountBook.class)))
 				.thenReturn(newBook);
@@ -187,6 +191,146 @@ class AccountingbookApplicationTests {
 		MockHttpServletResponse response = result.getResponse();
 
 		Mockito.verify(mockAccountBookRepository, times(1)).deleteById(mockBook1.getId());
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+	}
+
+	@Test
+	public void shouldReturnCorrectItem() throws Exception {
+		Page<SpendingItem> mockPagedItem =
+				new PageImpl<>(Arrays.asList(mockItem1), mockPagerequest, 1);
+
+		Mockito.when(mockAccountBookRepository.getReferenceById(mockBook1.getId()))
+				.thenReturn(mockBook1);
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId()))
+				.thenReturn(Optional.of(mockBook1));
+		Mockito.when(mockSpendingItemRepository.findById(mockItem1.getId(), mockPagerequest))
+				.thenReturn(mockPagedItem);
+
+		RequestBuilder requestBuilder =
+				MockMvcRequestBuilders.get("/api/accounts/test@test.com/books/1/items/1")
+						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expected = "{\"_embedded\":{\"items\":[{\"id\":1,\"category\":\"GROCERY\",\""
+				+ "description\":\"food\",\"merchant\":\"safeway\",\"date\":\"2022-10-02T07:"
+				+ "00:00.000+00:00\",\"amount\":76.14,\"_links\":{\"self\":{\"href\":\"http:"
+				+ "//localhost/api/accounts/test%40test.com/books/1/items/1{?page,size}\",\""
+				+ "templated\":true},\"items\":{\"href\":\"http://localhost/api/accounts/test%"
+				+ "40test.com/books/1/items{?page,size,category,text}\",\"templated\":true}}}]}"
+				+ ",\"_links\":{\"self\":{\"href\":\"http://localhost/api/accounts/test@test.com"
+				+ "/books/1/items/1?page=0&size=10\"}},\"page\":{\"size\":10,\"totalElements\":1,"
+				+ "\"totalPages\":1,\"number\":0}}";
+
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldReturnCorrectItems() throws Exception {
+		Page<SpendingItem> mockPagedItems =
+				new PageImpl<>(Arrays.asList(mockItem1, mockItem2), mockPagerequest, 1);
+
+		Mockito.when(mockAccountBookRepository.getReferenceById(mockBook1.getId()))
+				.thenReturn(mockBook1);
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId()))
+				.thenReturn(Optional.of(mockBook1));
+		Mockito.when(mockSpendingItemRepository.findAll(Mockito.any(Specification.class),
+				Mockito.any(PageRequest.class))).thenReturn(mockPagedItems);
+
+		RequestBuilder requestBuilder =
+				MockMvcRequestBuilders.get("/api/accounts/test@test.com/books/1/items")
+						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expected = "{\"_embedded\":{\"items\":[{\"id\":1,\"category\":\"GROCERY\",\""
+				+ "description\":\"food\",\"merchant\":\"safeway\",\"date\":\"2022-10-02T07:"
+				+ "00:00.000+00:00\",\"amount\":76.14,\"_links\":{\"self\":{\"href\":\"http://"
+				+ "localhost/api/accounts/test%40test.com/books/1/items/1{?page,size}\",\""
+				+ "templated\":true},\"items\":{\"href\":\"http://localhost/api/accounts/test%40"
+				+ "test.com/books/1/items{?page,size,category,text}\",\"templated\":true}}},"
+				+ "{\"id\":2,\"category\":\"HOUSEHOLD\",\"description\":\"cleanser\",\"merchant\""
+				+ ":\"amazon\",\"date\":\"2022-10-04T07:00:00.000+00:00\",\"amount\":98.56,"
+				+ "\"_links\":{\"self\":{\"href\":\"http://localhost/api/accounts/test%40test"
+				+ ".com/books/1/items/2{?page,size}\",\"templated\":true},\"items\":{\"href\":"
+				+ "\"http://localhost/api/accounts/test%40test.com/books/1/items{?page,size,"
+				+ "category,text}\",\"templated\":true}}}]},\"_links\":{\"self\":{\"href\":\""
+				+ "http://localhost/api/accounts/test@test.com/books/1/items?page=0&size=10\"}},"
+				+ "\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}}";
+
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldAddCorrectItem() throws Exception {
+		Mockito.when(mockAccountRepository.findByEmail(mockAccount.getEmail()))
+				.thenReturn(mockAccount);
+		Mockito.when(mockAccountBookRepository.getReferenceById(Mockito.anyLong()))
+				.thenReturn(mockBook2);
+		Mockito.when(mockAccountBookRepository.findById(Mockito.anyLong()))
+				.thenReturn(Optional.of(mockBook2));
+		SpendingItem newItem = getSpendingItem(3l, mockBook2, Category.GROCERY, "food", "Safeway",
+				new Date(1668111349L), 54.56f);
+		mockBook2.setSpendingItems(Arrays.asList(newItem));
+		String newItemJson =
+				"{\"id\":-1,\"category\":\"GROCERY\",\"description\":\"food\",\"merchant\":\""
+						+ "Safeway\",\"date\":1668111349,\"amount\":54.56}";
+
+		Mockito.when(mockSpendingItemRepository.save(Mockito.any(SpendingItem.class)))
+				.thenReturn(newItem);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/api/accounts/test@test.com/books/2/items").principal(mockPrincipal)
+				.accept(MediaTypes.HAL_JSON).content(newItemJson).contentType(MediaTypes.HAL_JSON);
+		String savedItemJson =
+				"{\"id\":3,\"category\":\"GROCERY\",\"description\":\"food\",\"merchant\":\""
+						+ "Safeway\",\"date\":1668111349,\"amount\":54.56}";
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
+		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		JSONAssert.assertEquals(savedItemJson, response.getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldUpdateItem() throws Exception {
+		Mockito.when(mockSpendingItemRepository.getReferenceById(Mockito.anyLong()))
+				.thenReturn(mockItem1);
+		Mockito.when(mockAccountBookRepository.getReferenceById(Mockito.anyLong()))
+				.thenReturn(mockBook1);
+		Mockito.when(mockAccountBookRepository.findById(Mockito.anyLong()))
+				.thenReturn(Optional.of(mockBook1));
+		SpendingItem updatedItem = getSpendingItem(1l, mockBook1, Category.GROCERY, "food",
+				"Safeway", new Date(1668111349L), 54.56f);
+
+		String updatedItemJson =
+				"{\"id\":1,\"category\":\"GROCERY\",\"description\":\"food\",\"merchant\":\""
+						+ "Safeway\",\"date\":1668111349,\"amount\":54.56}";
+
+		Mockito.when(mockSpendingItemRepository.save(Mockito.any(SpendingItem.class)))
+				.thenReturn(updatedItem);
+		RequestBuilder requestBuilder =
+				MockMvcRequestBuilders.put("/api/accounts/test@test.com/items/1")
+						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON)
+						.content(updatedItemJson).contentType(MediaTypes.HAL_JSON);
+
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		JSONAssert.assertEquals(updatedItemJson, response.getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldDeleteItem() throws Exception {
+		Mockito.when(mockSpendingItemRepository.getReferenceById(Mockito.anyLong()))
+				.thenReturn(mockItem1);
+		Mockito.when(mockAccountBookRepository.getReferenceById(Mockito.anyLong()))
+				.thenReturn(mockBook1);
+		Mockito.when(mockAccountBookRepository.findById(Mockito.anyLong()))
+				.thenReturn(Optional.of(mockBook1));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete("/api/accounts/test@test.com/items/1").principal(mockPrincipal);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
+		Mockito.verify(mockSpendingItemRepository, times(1)).deleteById(mockItem1.getId());
 		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
 	}
 
