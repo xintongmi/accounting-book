@@ -1,7 +1,7 @@
 package com.xintongthecoder.accountingbook;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -93,6 +92,7 @@ class AccountingbookApplicationTests {
 				.thenReturn(Optional.of(mockBook1));
 		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId(), mockPagerequest))
 				.thenReturn(mockPagedBook);
+
 		RequestBuilder requestBuilder =
 				MockMvcRequestBuilders.get("/api/accounts/test@test.com/books/1")
 						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON);
@@ -104,6 +104,7 @@ class AccountingbookApplicationTests {
 				+ ":{\"href\":\"http://localhost/api/accounts/test@test.com/books/1?page=0&"
 				+ "size=10\"}},\"page\":{\"size\":10,\"totalElements\":1,\"totalPages\":1,\""
 				+ "number\":0}}";
+
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
 
@@ -116,6 +117,7 @@ class AccountingbookApplicationTests {
 				.thenReturn(mockAccount);
 		Mockito.when(mockAccountBookRepository.findAllByAccount(mockAccount, mockPagerequest))
 				.thenReturn(mockPagedBook);
+
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.get("/api/accounts/test@test.com/books").accept(MediaTypes.HAL_JSON);
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
@@ -128,6 +130,7 @@ class AccountingbookApplicationTests {
 				+ "accounts/{email}/books{?page,size}\",\"templated\":true}}}]},\"_links\":{\"self"
 				+ "\":{\"href\":\"http://localhost/api/accounts/test@test.com/books?page=0&size=10"
 				+ "\"}},\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}}";
+
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
 
@@ -137,16 +140,55 @@ class AccountingbookApplicationTests {
 				.thenReturn(mockAccount);
 		AccountBook newBook = getAccountBook(3l, mockAccount, "newBook");
 		String newBookJson = "{\"id\": \"-1\", \"name\": \"newBook\"}";
+
 		Mockito.when(mockAccountBookRepository.save(Mockito.any(AccountBook.class)))
 				.thenReturn(newBook);
 		RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post("/api/accounts/test@test.com/books").accept(MediaTypes.HAL_JSON)
 				.content(newBookJson).contentType(MediaTypes.HAL_JSON);
+		String savedBookJson = "{\"id\": 3, \"name\": \"newBook\"}";
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		MockHttpServletResponse response = result.getResponse();
+
 		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+		JSONAssert.assertEquals(savedBookJson, response.getContentAsString(), false);
 	}
 
+	@Test
+	public void shouldUpdateBook() throws Exception {
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId()))
+				.thenReturn(Optional.of(mockBook1));
+		Mockito.when(mockAccountRepository.findByEmail(mockAccount.getEmail()))
+				.thenReturn(mockAccount);
+		mockBook1.setName("updatedBook1");
+		String updatedBookJson = "{\"id\": 1, \"name\": \"updatedBook1\"}";
+		Mockito.when(mockAccountBookRepository.save(Mockito.any(AccountBook.class)))
+				.thenReturn(mockBook1);
+
+		RequestBuilder requestBuilder =
+				MockMvcRequestBuilders.put("/api/accounts/test@test.com/books/1")
+						.principal(mockPrincipal).accept(MediaTypes.HAL_JSON)
+						.content(updatedBookJson).contentType(MediaTypes.HAL_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
+		assertEquals(HttpStatus.OK.value(), response.getStatus());
+		JSONAssert.assertEquals(updatedBookJson, response.getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldDeleteBook() throws Exception {
+		Mockito.when(mockAccountBookRepository.findById(mockBook1.getId()))
+				.thenReturn(Optional.of(mockBook1));
+
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete("/api/accounts/test@test.com/books/1").principal(mockPrincipal);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+
+		Mockito.verify(mockAccountBookRepository, times(1)).deleteById(mockBook1.getId());
+		assertEquals(HttpStatus.NO_CONTENT.value(), response.getStatus());
+	}
 
 	private Account getAccount(String email) {
 		Account account = new Account();
@@ -174,5 +216,4 @@ class AccountingbookApplicationTests {
 		item.setAmount(amount);
 		return item;
 	}
-
 }
