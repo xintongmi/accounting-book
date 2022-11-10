@@ -1,5 +1,7 @@
 package com.xintongthecoder.accountingbook;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.Date;
@@ -20,6 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -48,10 +53,10 @@ class AccountingbookApplicationTests {
 	private AccountBookRepository mockAccountBookRepository;
 
 	@InjectMocks
-	private SpendingItemController spendingItemController;
+	private SpendingItemController mockSpendingItemController;
 
 	@MockBean
-	private AccountRepository accountRepository;
+	private AccountRepository mockAccountRepository;
 
 	private Account mockAccount;
 	private AccountBook mockBook1;
@@ -101,6 +106,47 @@ class AccountingbookApplicationTests {
 				+ "number\":0}}";
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
+
+	@Test
+	public void shouldReturnCorrectBookList() throws Exception {
+		Page<AccountBook> mockPagedBook =
+				new PageImpl<>(Arrays.asList(mockBook1, mockBook2), mockPagerequest, 1);
+
+		Mockito.when(mockAccountRepository.findByEmail(mockAccount.getEmail()))
+				.thenReturn(mockAccount);
+		Mockito.when(mockAccountBookRepository.findAllByAccount(mockAccount, mockPagerequest))
+				.thenReturn(mockPagedBook);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.get("/api/accounts/test@test.com/books").accept(MediaTypes.HAL_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		String expected = "{\"_embedded\":{\"books\":[{\"id\":1,\"name\":\"mockBook1\",\"_links\":"
+				+ "{\"self\":{\"href\":\"http://localhost/api/accounts/{email}/books/1{?page,size}"
+				+ "\",\"templated\":true},\"books\":{\"href\":\"http://localhost/api/accounts/{"
+				+ "email}/books{?page,size}\",\"templated\":true}}},{\"id\":2,\"name\":\"mockBook2"
+				+ "\",\"_links\":{\"self\":{\"href\":\"http://localhost/api/accounts/{email}/books"
+				+ "/2{?page,size}\",\"templated\":true},\"books\":{\"href\":\"http://localhost/api/"
+				+ "accounts/{email}/books{?page,size}\",\"templated\":true}}}]},\"_links\":{\"self"
+				+ "\":{\"href\":\"http://localhost/api/accounts/test@test.com/books?page=0&size=10"
+				+ "\"}},\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}}";
+		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
+	}
+
+	@Test
+	public void shouldAddCorrectBook() throws Exception {
+		Mockito.when(mockAccountRepository.findByEmail(mockAccount.getEmail()))
+				.thenReturn(mockAccount);
+		AccountBook newBook = getAccountBook(3l, mockAccount, "newBook");
+		String newBookJson = "{\"id\": \"-1\", \"name\": \"newBook\"}";
+		Mockito.when(mockAccountBookRepository.save(Mockito.any(AccountBook.class)))
+				.thenReturn(newBook);
+		RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/api/accounts/test@test.com/books").accept(MediaTypes.HAL_JSON)
+				.content(newBookJson).contentType(MediaTypes.HAL_JSON);
+		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+		MockHttpServletResponse response = result.getResponse();
+		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+	}
+
 
 	private Account getAccount(String email) {
 		Account account = new Account();
