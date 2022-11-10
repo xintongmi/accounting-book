@@ -64,7 +64,7 @@ public class AccountBookController {
     }
 
     private boolean isFromAuthorizedAccount(String email, Long bookId, Principal user) {
-        if (accountBookRepository.findById(bookId) == null) {
+        if (accountBookRepository.findById(bookId).isEmpty()) {
             throw new AccountBookNotFoundException(bookId);
         }
         return accountBookRepository.findById(bookId).get().getAccount().getEmail().equals(email)
