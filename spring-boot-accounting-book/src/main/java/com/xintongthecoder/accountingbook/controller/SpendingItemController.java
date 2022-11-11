@@ -4,12 +4,15 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
@@ -91,13 +94,20 @@ public class SpendingItemController {
             @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "min", required = false) Long min,
-            @RequestParam(value = "max", required = false) Long max, Principal user) {
+            @RequestParam(value = "max", required = false) Long max,
+            @RequestParam(value = "sortBy", required = false) String sortBy,
+            @RequestParam(value = "sortDir", required = false) String sortDir, Principal user) {
         if (!isFromAuthorizedAccount(email, bookId, user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+        Set<String> sortBySet = Set.of("date", "category", "merchant", "amount");
+        if (sortBy != null && !sortBySet.contains(sortBy)) {
+            throw new Error("Invalid sortBy param");
+        }
+        boolean isAsc = sortDir.equals("asc");
         Page<SpendingItem> pagedItems = spendingItemRepository.findAll(
-                getFilters(bookId, startDate, endDate, category, text, min, max),
-                PageRequest.of(page, size));
+                getFilters(bookId, startDate, endDate, category, text, min, max), PageRequest
+                        .of(page, size, Sort.by(isAsc ? Direction.ASC : Direction.DESC, sortBy)));
         return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                 .body(pagedResourcesAssembler.toModel(pagedItems, spendingItemModelAssembler));
     }

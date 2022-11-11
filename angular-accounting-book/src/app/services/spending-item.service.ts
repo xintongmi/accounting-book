@@ -45,7 +45,9 @@ export class SpendingItemService {
     text: string,
     category: Category,
     min: number,
-    max: number
+    max: number,
+    sortBy: string,
+    sortDir: string
   ): Observable<ListSpendingItemResponse> {
     const params = [];
     params.push(`page=${pageIndex}`);
@@ -67,6 +69,12 @@ export class SpendingItemService {
     }
     if (max) {
       params.push(`max=${max}`);
+    }
+    if (sortBy) {
+      params.push(`sortBy=${sortBy}`);
+    }
+    if (sortDir) {
+      params.push(`sortDir=${sortDir}`);
     }
 
     const suffix = params.join('&');
