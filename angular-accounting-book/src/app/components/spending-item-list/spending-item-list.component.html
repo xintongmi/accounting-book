@@ -47,9 +47,9 @@
           class="item-list-container"
         >
           <div class="item-list-table-container">
-            <div *ngIf="dataSource.data.length == 0">No items found.</div>
+            <div *ngIf="dataSource.length == 0">No items found.</div>
             <table
-              *ngIf="dataSource.data.length > 0"
+              *ngIf="dataSource.length > 0"
               mat-table
               [dataSource]="dataSource"
               matSort
