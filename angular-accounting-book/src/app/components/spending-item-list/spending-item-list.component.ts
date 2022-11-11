@@ -4,6 +4,7 @@ import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
+import { filter } from 'rxjs';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { AccountBookService } from 'src/app/services/account-book.service';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
@@ -33,8 +34,12 @@ export class SpendingItemListComponent implements OnInit {
   pageIndex = 0;
   pageSize = 10;
   length = 0;
+  startDate!: Date;
+  endDate!: Date;
   category = Category.ALL;
   text = '';
+  min = 0;
+  max = 0;
 
   newItemDate?: Date;
   newItemCategory? = Category;
@@ -81,8 +86,12 @@ export class SpendingItemListComponent implements OnInit {
   }
 
   refreshTableOnFilterChange(filterChange: FilterChange) {
+    this.startDate = filterChange.startDate;
+    this.endDate = filterChange.endDate;
     this.text = filterChange.text;
     this.category = filterChange.category;
+    this.min = filterChange.min;
+    this.max = filterChange.max;
     this.pageIndex = 0;
 
     this.refreshTable();
@@ -102,8 +111,12 @@ export class SpendingItemListComponent implements OnInit {
         this.bookId,
         this.pageIndex,
         this.pageSize,
+        this.startDate,
+        this.endDate,
+        this.text,
         this.category,
-        this.text
+        this.min,
+        this.max
       )
       .subscribe(this.processResponse());
   }
