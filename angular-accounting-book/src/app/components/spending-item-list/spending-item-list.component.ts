@@ -137,7 +137,6 @@ export class SpendingItemListComponent {
   processResponse() {
     return (data: any) => {
       this.dataSource = new MatTableDataSource(data.spendingItems);
-      // this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       this.length = data.page.totalElements;
       this.isLoading = false;
     };
