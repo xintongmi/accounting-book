@@ -20,6 +20,6 @@ public class SpendingItemModelAssembler
                                                 item.getId(), null, null, null)).withSelfRel(),
                                 linkTo(methodOn(SpendingItemController.class).all(email, bookId,
                                                 null, null, null, null, null, null, null, null,
-                                                null)).withRel("items"));
+                                                null, null, null)).withRel("items"));
         }
 }

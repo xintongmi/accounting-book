@@ -1,10 +1,11 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { filter } from 'rxjs';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { AccountBookService } from 'src/app/services/account-book.service';
 import { SpendingItemService } from 'src/app/services/spending-item.service';
@@ -16,8 +17,8 @@ import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dia
   templateUrl: './spending-item-list.component.html',
   styleUrls: ['./spending-item-list.component.scss'],
 })
-export class SpendingItemListComponent implements OnInit {
-  dataSource: SpendingItem[] = [];
+export class SpendingItemListComponent {
+  dataSource = new MatTableDataSource<SpendingItem>();
   isLoading = false;
   bookId = 0;
   bookName = '';
@@ -40,6 +41,8 @@ export class SpendingItemListComponent implements OnInit {
   text = '';
   min = 0;
   max = 0;
+  sortBy = 'date';
+  sortDir: 'asc' | 'desc' = 'desc';
 
   newItemDate?: Date;
   newItemCategory? = Category;
@@ -70,8 +73,6 @@ export class SpendingItemListComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void {}
-
   changeMode(event: MatSelectionListChange) {
     const selectedOption = event.options[0].value;
     if (selectedOption === 'records' || selectedOption === 'report') {
@@ -81,7 +82,7 @@ export class SpendingItemListComponent implements OnInit {
     }
   }
 
-  listFilteredItems(filteredItems: SpendingItem[]) {
+  listFilteredItems(filteredItems: MatTableDataSource<SpendingItem>) {
     this.dataSource = filteredItems;
   }
 
@@ -93,6 +94,16 @@ export class SpendingItemListComponent implements OnInit {
     this.min = filterChange.min;
     this.max = filterChange.max;
     this.pageIndex = 0;
+
+    this.refreshTable();
+  }
+
+  refreshTableOnSort(sort: Sort) {
+    if (!sort.active || sort.direction === '') {
+      return;
+    }
+    this.sortBy = sort.active;
+    this.sortDir = sort.direction === 'asc' ? 'desc' : 'asc';
 
     this.refreshTable();
   }
@@ -116,14 +127,17 @@ export class SpendingItemListComponent implements OnInit {
         this.text,
         this.category,
         this.min,
-        this.max
+        this.max,
+        this.sortBy,
+        this.sortDir
       )
       .subscribe(this.processResponse());
   }
 
   processResponse() {
     return (data: any) => {
-      this.dataSource = data.spendingItems;
+      this.dataSource = new MatTableDataSource(data.spendingItems);
+      // this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       this.length = data.page.totalElements;
       this.isLoading = false;
     };

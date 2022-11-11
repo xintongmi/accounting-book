@@ -20,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { UpdateItemDialogModule } from '../update-item-dialog/update-item-dialog.module';
 import { FilterBarModule } from '../item-filter-bar/item-filter-bar.module';
 import { MatListModule } from '@angular/material/list';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [SpendingItemListComponent],
@@ -45,6 +46,7 @@ import { MatListModule } from '@angular/material/list';
     ReactiveFormsModule,
     UpdateItemDialogModule,
     FilterBarModule,
+    MatSortModule,
   ],
 })
 export class SpendingItemListModule {}
