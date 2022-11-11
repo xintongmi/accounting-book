@@ -103,7 +103,7 @@ export class SpendingItemListComponent {
       return;
     }
     this.sortBy = sort.active;
-    this.sortDir = sort.direction === 'asc' ? 'desc' : 'asc';
+    this.sortDir = sort.direction;
 
     this.refreshTable();
   }
