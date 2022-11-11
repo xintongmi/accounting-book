@@ -40,18 +40,35 @@ export class SpendingItemService {
     bookId: number,
     pageIndex: number,
     pageSize: number,
+    startDate: Date,
+    endDate: Date,
+    text: string,
     category: Category,
-    text: string
+    min: number,
+    max: number
   ): Observable<ListSpendingItemResponse> {
     const params = [];
     params.push(`page=${pageIndex}`);
     params.push(`size=${pageSize}`);
+    if (startDate) {
+      params.push(`startDate=${startDate}`);
+    }
+    if (endDate) {
+      params.push(`endDate=${endDate}`);
+    }
     if (category !== Category.ALL) {
       params.push(`category=${category}`);
     }
     if (text) {
       params.push(`text=${text}`);
     }
+    if (min) {
+      params.push(`min=${min}`);
+    }
+    if (max) {
+      params.push(`max=${max}`);
+    }
+
     const suffix = params.join('&');
     return this.getUrl$({ bookId }).pipe(
       map((url) => `${url}?${suffix}`),

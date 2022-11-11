@@ -1,4 +1,22 @@
-.search-field {
-  margin-left: 15px;
-  margin-right: 15px;
+.filter-form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  .date-filter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .amount-filter-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+    .amount-filter {
+      width: 120px;
+    }
+  }
 }

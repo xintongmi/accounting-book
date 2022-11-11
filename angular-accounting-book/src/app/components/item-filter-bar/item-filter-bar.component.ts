@@ -1,11 +1,15 @@
 import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 import { Category } from 'src/app/data-types';
 
 export interface FilterChange {
+  startDate: Date;
+  endDate: Date;
   text: string;
   category: Category;
+  min: number;
+  max: number;
 }
 
 @Component({
@@ -23,13 +27,19 @@ export class FilterBarComponent implements OnDestroy {
 
   constructor(private formBuilder: FormBuilder) {
     this.filterForm = formBuilder.group({
+      startDate: [],
+      endDate: [],
       text: [],
       category: [Category.ALL],
+      min: ['', Validators.pattern('^([0-9]+(\\.[0-9]?[0-9]?)?)$')],
+      max: ['', Validators.pattern('^([0-9]+(\\.[0-9]?[0-9]?)?)$')],
     });
     this.filterForm.valueChanges
-      .pipe(takeUntil(this.destroy))
+      .pipe(debounceTime(200), takeUntil(this.destroy))
       .subscribe((v) => {
-        this.filterChange.next(v);
+        if (this.filterForm.valid) {
+          this.filterChange.next(v);
+        }
       });
   }
 

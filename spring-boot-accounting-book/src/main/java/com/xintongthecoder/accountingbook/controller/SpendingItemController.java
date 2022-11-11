@@ -2,6 +2,7 @@ package com.xintongthecoder.accountingbook.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -85,19 +86,24 @@ public class SpendingItemController {
             @PathVariable("email") String email, @PathVariable("bookId") Long bookId,
             @RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "startDate", required = false) Date startDate,
+            @RequestParam(value = "endDate", required = false) Date endDate,
             @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "text", required = false) String text, Principal user) {
+            @RequestParam(value = "text", required = false) String text,
+            @RequestParam(value = "min", required = false) Long min,
+            @RequestParam(value = "max", required = false) Long max, Principal user) {
         if (!isFromAuthorizedAccount(email, bookId, user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        Page<SpendingItem> pagedItems = spendingItemRepository
-                .findAll(getFilters(bookId, category, text), PageRequest.of(page, size));
+        Page<SpendingItem> pagedItems = spendingItemRepository.findAll(
+                getFilters(bookId, startDate, endDate, category, text, min, max),
+                PageRequest.of(page, size));
         return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                 .body(pagedResourcesAssembler.toModel(pagedItems, spendingItemModelAssembler));
     }
 
-    private static Specification<SpendingItem> getFilters(Long bookId, String category,
-            String text) {
+    private static Specification<SpendingItem> getFilters(Long bookId, Date startDate, Date endDate,
+            String category, String text, Long min, Long max) {
 
         return new Specification<SpendingItem>() {
             @Override
@@ -105,6 +111,14 @@ public class SpendingItemController {
                     CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 predicates.add(criteriaBuilder.equal(root.get("book").get("id"), bookId));
+                if (startDate != null) {
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.<Date>get("date"),
+                            startDate));
+                }
+                if (endDate != null) {
+                    predicates.add(
+                            criteriaBuilder.lessThanOrEqualTo(root.<Date>get("date"), endDate));
+                }
                 if (category != null && !category.equals("ALL")) {
                     predicates.add(criteriaBuilder.equal(root.get("category"),
                             Category.valueOf(category)));
@@ -114,6 +128,12 @@ public class SpendingItemController {
                             criteriaBuilder.like(root.get("description"), "%" + text + "%"),
                             criteriaBuilder.like(root.get("merchant"), "%" + text + "%"));
                     predicates.add(filterPredicate);
+                }
+                if (min != null) {
+                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("amount"), min));
+                }
+                if (max != null) {
+                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("amount"), max));
                 }
                 return criteriaBuilder.and(predicates.toArray(new Predicate[] {}));
             }
