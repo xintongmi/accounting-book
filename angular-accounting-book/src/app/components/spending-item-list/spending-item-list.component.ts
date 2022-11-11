@@ -4,7 +4,6 @@ import { MatSelectionListChange } from '@angular/material/list';
 import { PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Sort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
 import { Category, SpendingItem } from 'src/app/data-types';
 import { AccountBookService } from 'src/app/services/account-book.service';
@@ -18,7 +17,7 @@ import { UpdateItemDialogComponent } from '../update-item-dialog/update-item-dia
   styleUrls: ['./spending-item-list.component.scss'],
 })
 export class SpendingItemListComponent {
-  dataSource = new MatTableDataSource<SpendingItem>();
+  dataSource: SpendingItem[] = [];
   isLoading = false;
   bookId = 0;
   bookName = '';
@@ -82,7 +81,7 @@ export class SpendingItemListComponent {
     }
   }
 
-  listFilteredItems(filteredItems: MatTableDataSource<SpendingItem>) {
+  listFilteredItems(filteredItems: SpendingItem[]) {
     this.dataSource = filteredItems;
   }
 
@@ -136,7 +135,7 @@ export class SpendingItemListComponent {
 
   processResponse() {
     return (data: any) => {
-      this.dataSource = new MatTableDataSource(data.spendingItems);
+      this.dataSource = data.spendingItems;
       this.length = data.page.totalElements;
       this.isLoading = false;
     };
