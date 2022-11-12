@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: spring-boot
-          image: gcr.io/project-accounting-book/spring-boot-accounting-book:1.1
+          image: gcr.io/project-accounting-book/spring-boot-accounting-book:1.2
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
