@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: angular
-          image: gcr.io/project-accounting-book/angular-accounting-book:1.2
+          image: gcr.io/project-accounting-book/angular-accounting-book:1.3
           imagePullPolicy: Always
           ports:
             - containerPort: 80
