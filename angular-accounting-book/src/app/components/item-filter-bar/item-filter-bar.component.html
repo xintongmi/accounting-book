@@ -1,74 +1,57 @@
-<div class="table-filters">
-  <form [formGroup]="filterForm" class="filter-form-container">
-    <ng-container class="date-filter-container">
-      <mat-form-field appearance="fill" class="date-filter">
-        <mat-label>From date </mat-label>
-        <input
-          matInput
-          formControlName="startDate"
-          [matDatepicker]="picker1"
-          autocomplete="off"
-        />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker1"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker1></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="fill" class="date-filter">
-        <mat-label>To date </mat-label>
-        <input
-          matInput
-          formControlName="endDate"
-          [matDatepicker]="picker2"
-          autocomplete="off"
-        />
-        <mat-hint>MM/DD/YYYY</mat-hint>
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker2"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-      </mat-form-field>
-    </ng-container>
-
-    <mat-form-field appearance="fill" class="text-filter">
-      <mat-label>Search... </mat-label>
-      <input matInput formControlName="text" autocomplete="off" />
+<form [formGroup]="filterForm" class="filter-form-container">
+  <div class="date-filter-container">
+    <mat-form-field appearance="fill" class="date-filter">
+      <mat-label>From date </mat-label>
+      <input
+        matInput
+        formControlName="startDate"
+        [matDatepicker]="picker1"
+        autocomplete="off"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+      <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
-
-    <mat-form-field appearance="fill" class="category-filter">
-      <mat-label>category</mat-label>
-      <mat-select formControlName="category">
-        <mat-option *ngFor="let category of categories" [value]="category">{{
-          category
-        }}</mat-option>
-      </mat-select>
+    <div class="dash">-</div>
+    <mat-form-field appearance="fill" class="date-filter">
+      <mat-label>To date </mat-label>
+      <input
+        matInput
+        formControlName="endDate"
+        [matDatepicker]="picker2"
+        autocomplete="off"
+      />
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2></mat-datepicker>
     </mat-form-field>
+  </div>
 
-    <ng-container class="amount-filter-container">
-      <mat-form-field appearance="fill" class="amount-filter">
-        <mat-label>Min </mat-label>
-        <input
-          matInput
-          formControlName="min"
-          placeholder="0"
-          autocomplete="off"
-        />
-        <span matPrefix>$&nbsp;</span>
-      </mat-form-field>
-      <div class="dash">-</div>
-      <mat-form-field appearance="fill" class="amount-filter">
-        <mat-label>Max </mat-label>
-        <input
-          matInput
-          formControlName="max"
-          placeholder="0"
-          autocomplete="off"
-        />
-        <span matPrefix>$&nbsp;</span>
-      </mat-form-field>
-    </ng-container>
-  </form>
-</div>
+  <mat-form-field appearance="fill" class="text-filter">
+    <mat-label>Search... </mat-label>
+    <input matInput formControlName="text" autocomplete="off" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="category-filter">
+    <mat-label>category</mat-label>
+    <mat-select formControlName="category">
+      <mat-option *ngFor="let category of categories" [value]="category">{{
+        category
+      }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="amount-filter-container">
+    <mat-form-field appearance="fill" class="amount-filter">
+      <mat-label>Min </mat-label>
+      <input matInput formControlName="min" autocomplete="off" />
+      <span matPrefix>$&nbsp;</span>
+    </mat-form-field>
+    <div class="dash">-</div>
+    <mat-form-field appearance="fill" class="amount-filter">
+      <mat-label>Max </mat-label>
+      <input matInput formControlName="max" autocomplete="off" />
+      <span matPrefix>$&nbsp;</span>
+    </mat-form-field>
+  </div>
+</form>

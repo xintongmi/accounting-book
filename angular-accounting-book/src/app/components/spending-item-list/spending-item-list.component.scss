@@ -5,6 +5,7 @@
 
   .toolbar {
     display: flex;
+    flex: 0 0 auto;
     justify-content: space-around;
 
     .toolbar-spacer {
@@ -33,6 +34,18 @@
       flex: auto;
       flex-direction: column;
 
+      .action-bar {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 12px;
+
+        .add-button {
+          margin: 8px;
+        }
+      }
+
       .spinner-container {
         display: flex;
         flex: auto;
@@ -48,7 +61,7 @@
         flex-direction: column;
       }
 
-      .table-header {
+      .add-button {
         display: flex;
         align-items: center;
         padding: 8px;

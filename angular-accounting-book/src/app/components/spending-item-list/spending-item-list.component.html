@@ -27,14 +27,19 @@
   <mat-drawer-content>
     <section class="items-section">
       <!-- ADD + SEARCH / FILTER BAR -->
-      <div class="table-header">
-        <button mat-mini-fab color="accent" (click)="openEditItemDialog()">
+      <section class="action-bar">
+        <button
+          mat-mini-fab
+          color="accent"
+          (click)="openEditItemDialog()"
+          class="add-button"
+        >
           <mat-icon fontIcon="add"></mat-icon>
         </button>
         <app-item-filter-bar
           (filterChange)="refreshTableOnFilterChange($event)"
         ></app-item-filter-bar>
-      </div>
+      </section>
       <!-- END ADD + SEARCH / FILTER BAR -->
       <mat-divider></mat-divider>
       <div *ngIf="isLoading" class="spinner-container">
