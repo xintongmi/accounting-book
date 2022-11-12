@@ -7,16 +7,42 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
+
+    .dash {
+      font-size: x-large;
+    }
+
+    .date-filter {
+      width: 160px;
+      margin-left: 12px;
+      margin-right: 12px;
+    }
+  }
+
+  .text-filter {
+    margin-left: 20px;
+  }
+
+  .category-filter {
+    margin-left: 12px;
   }
 
   .amount-filter-container {
+    margin-left: 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
 
+    .dash {
+      font-size: x-large;
+    }
+
     .amount-filter {
       width: 120px;
+      margin-left: 12px;
+      margin-right: 12px;
     }
   }
 }
