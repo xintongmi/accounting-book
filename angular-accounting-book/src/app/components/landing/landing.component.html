@@ -1,6 +1,6 @@
 <!-- TOP TOOLBAR -->
 <mat-toolbar color="primary" class="toolbar">
-  <div>Family Spending Book</div>
+  <div>Account Book</div>
   <span class="toolbar-spacer"></span>
   <app-login-status class="login-status"></app-login-status>
   <button mat-raised-button (click)="signinWithTrialAccount()">
@@ -10,7 +10,7 @@
 <!-- END TOP TOOLBAR -->
 <!-- CAROUSEL -->
 <div class="carousel-container">
-  <mdb-carousel [controls]="true" [indicators]="true" [interval]="10000000">
+  <mdb-carousel [controls]="true" [indicators]="true" [interval]="5000">
     <mdb-carousel-item *ngFor="let slide of slides" class="carousel-item">
       <img [src]="slide.src" class="demo-image" alt="..." loading="lazy" />
     </mdb-carousel-item>
