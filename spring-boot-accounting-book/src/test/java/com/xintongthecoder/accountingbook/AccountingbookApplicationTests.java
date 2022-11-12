@@ -215,10 +215,10 @@ class AccountingbookApplicationTests {
 				+ "00:00.000+00:00\",\"amount\":76.14,\"_links\":{\"self\":{\"href\":\"http:"
 				+ "//localhost/api/accounts/test%40test.com/books/1/items/1{?page,size}\",\""
 				+ "templated\":true},\"items\":{\"href\":\"http://localhost/api/accounts/test%"
-				+ "40test.com/books/1/items{?page,size,category,text}\",\"templated\":true}}}]}"
-				+ ",\"_links\":{\"self\":{\"href\":\"http://localhost/api/accounts/test@test.com"
-				+ "/books/1/items/1?page=0&size=10\"}},\"page\":{\"size\":10,\"totalElements\":1,"
-				+ "\"totalPages\":1,\"number\":0}}";
+				+ "40test.com/books/1/items{?page,size,startDate,endDate,category,text,min,max,"
+				+ "sortBy,sortDir}\",\"templated\":true}}}]},\"_links\":{\"self\":{\"href\":\""
+				+ "http://localhost/api/accounts/test@test.com/books/1/items/1?page=0&size=10\"}}"
+				+ ",\"page\":{\"size\":10,\"totalElements\":1,\"totalPages\":1,\"number\":0}}";
 
 		JSONAssert.assertEquals(expected, result.getResponse().getContentAsString(), false);
 	}
@@ -244,13 +244,14 @@ class AccountingbookApplicationTests {
 				+ "00:00.000+00:00\",\"amount\":76.14,\"_links\":{\"self\":{\"href\":\"http://"
 				+ "localhost/api/accounts/test%40test.com/books/1/items/1{?page,size}\",\""
 				+ "templated\":true},\"items\":{\"href\":\"http://localhost/api/accounts/test%40"
-				+ "test.com/books/1/items{?page,size,category,text}\",\"templated\":true}}},"
-				+ "{\"id\":2,\"category\":\"HOUSEHOLD\",\"description\":\"cleanser\",\"merchant\""
-				+ ":\"amazon\",\"date\":\"2022-10-04T07:00:00.000+00:00\",\"amount\":98.56,"
-				+ "\"_links\":{\"self\":{\"href\":\"http://localhost/api/accounts/test%40test"
-				+ ".com/books/1/items/2{?page,size}\",\"templated\":true},\"items\":{\"href\":"
-				+ "\"http://localhost/api/accounts/test%40test.com/books/1/items{?page,size,"
-				+ "category,text}\",\"templated\":true}}}]},\"_links\":{\"self\":{\"href\":\""
+				+ "test.com/books/1/items{?page,size,startDate,endDate,category,text,min,max,"
+				+ "sortBy,sortDir}\",\"templated\":true}}},{\"id\":2,\"category\":\"HOUSEHOLD"
+				+ "\",\"description\":\"cleanser\",\"merchant\":\"amazon\",\"date\":\"2022-10-"
+				+ "04T07:00:00.000+00:00\",\"amount\":98.56,\"_links\":{\"self\":{\"href\":\""
+				+ "http://localhost/api/accounts/test%40test.com/books/1/items/2{?page,size}\","
+				+ "\"templated\":true},\"items\":{\"href\":\"http://localhost/api/accounts/test"
+				+ "%40test.com/books/1/items{?page,size,startDate,endDate,category,text,min,max,"
+				+ "sortBy,sortDir}\",\"templated\":true}}}]},\"_links\":{\"self\":{\"href\":\""
 				+ "http://localhost/api/accounts/test@test.com/books/1/items?page=0&size=10\"}},"
 				+ "\"page\":{\"size\":10,\"totalElements\":2,\"totalPages\":1,\"number\":0}}";
 

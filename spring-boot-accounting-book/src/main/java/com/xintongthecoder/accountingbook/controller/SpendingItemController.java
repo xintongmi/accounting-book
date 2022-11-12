@@ -95,19 +95,21 @@ public class SpendingItemController {
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "min", required = false) Long min,
             @RequestParam(value = "max", required = false) Long max,
-            @RequestParam(value = "sortBy", required = false) String sortBy,
-            @RequestParam(value = "sortDir", required = false) String sortDir, Principal user) {
+            @RequestParam(value = "sortBy", defaultValue = "date") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "desc") String sortDir,
+            Principal user) {
         if (!isFromAuthorizedAccount(email, bookId, user)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+
         Set<String> sortBySet = Set.of("date", "category", "merchant", "amount");
-        if (sortBy != null && !sortBySet.contains(sortBy)) {
-            throw new Error("Invalid sortBy param");
+        if (!sortBySet.contains(sortBy) || (!sortDir.equals("asc") && !sortDir.equals("desc"))) {
+            throw new Error("Invalid sort param");
         }
-        boolean isAsc = sortDir.equals("asc");
+        PageRequest pageRequest = PageRequest.of(page, size,
+                Sort.by(sortDir.equals("asc") ? Direction.ASC : Direction.DESC, sortBy));
         Page<SpendingItem> pagedItems = spendingItemRepository.findAll(
-                getFilters(bookId, startDate, endDate, category, text, min, max), PageRequest
-                        .of(page, size, Sort.by(isAsc ? Direction.ASC : Direction.DESC, sortBy)));
+                getFilters(bookId, startDate, endDate, category, text, min, max), pageRequest);
         return ResponseEntity.ok().contentType(MediaTypes.HAL_JSON)
                 .body(pagedResourcesAssembler.toModel(pagedItems, spendingItemModelAssembler));
     }
