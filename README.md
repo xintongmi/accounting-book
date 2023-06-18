@@ -4,23 +4,23 @@
 
 ## Synopsis
 
-This is a full-stack project aimed at tracking and analyzing home expenses.
+This is a full-stack project aimed at tracking and analyzing home expenses
 
 ## Tech Stack
 
-Frontend: Angular
+- Frontend: Angular
 
-Backend: Spring Boot and Gradle
+- Backend: Spring Boot and Gradle
 
-Database: PostgreSQL
+- Database: PostgreSQL
 
-Frontend Testing: Jasmine
+- Frontend Testing: Jasmine
 
-Backend Testing: JUnit 5
+- Backend Testing: JUnit 5
 
-Deployment: Docker and Google Kubernetes Engine
+- Deployment: Docker and Google Kubernetes Engine
 
-Auth: OAuth 2.0
+- Auth: OAuth 2.0
 
 ## API Definition
 
