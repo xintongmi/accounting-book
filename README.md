@@ -1,3 +1,7 @@
+## Design Doc
+
+[Accounting Book Design Doc](https://docs.google.com/document/d/1_9h_D7Xz8lVjI5VXVwvWmkhmUylFtJl3J_u8nBFuCyU/edit?usp=sharing)
+
 ## Synopsis
 
 This is a full-stack project aimed at tracking and analyzing home expenses.
@@ -88,10 +92,12 @@ The testing focus will be primarily on the web layer, ensuring comprehensive cov
 
 It's important to note that database operations, which are managed by JPA and devoid of customization logic, will not be included in the test coverage. Instead, Mokito will be utilized to mock all database queries. Additionally, security and authentication will be disabled during testing.
 
-## Contributors
+## Contributor
 
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+Xintong Mi
 
 ## License
 
-A short snippet describing the license (MIT, Apache, etc.)
+Apache License
+Version 2.0, January 2004
+http://www.apache.org/licenses/
