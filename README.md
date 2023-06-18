@@ -41,7 +41,8 @@ This is a full-stack project aimed at tracking and analyzing home expenses
 ### Account
 
     public class Account {
-        @Id @GeneratedValue(...) 
+        @Id
+        @GeneratedValue(...) 
         private Long id;
         
         @Column(unique = true) 
@@ -54,7 +55,8 @@ This is a full-stack project aimed at tracking and analyzing home expenses
 ### AccountBook
 
     public class AccountBook {
-        @Id @GeneratedValue(...)
+        @Id
+        @GeneratedValue(...)
         private Long id; 
         private String name;
         
@@ -70,7 +72,8 @@ This is a full-stack project aimed at tracking and analyzing home expenses
 ### SpendingItem
 
     public class SpendingItem {
-        @Id @GeneratedValue(...)
+        @Id
+        @GeneratedValue(...)
         private Long id;
         private Category category;
         private String description;
