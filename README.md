@@ -34,12 +34,59 @@ Auth: OAuth 2.0
 
 ## Entities
 
-Provide code examples and explanations of how to get the project.
+### Account
 
+    public class Account {
+        @Id @GeneratedValue(...) 
+        private Long id;
+        
+        @Column(unique = true) 
+        private String email;
+        
+        @OneToMany(...) 
+        private List<AccountBook> accountBooks;
+    }
+
+### AccountBook
+
+    public class AccountBook {
+        @Id @GeneratedValue(...)
+        private Long id; 
+        private String name;
+        
+        @OneToMany(...) 
+        private List<SpendingItem> spendingItems;
+        
+        @ManyToOne(...)        
+        @JoinColumn(...)       
+        private Account account;
+    }
+
+
+### SpendingItem
+
+    public class SpendingItem {
+        @Id @GeneratedValue(...)
+        private Long id;
+        private Category category;
+        private String description;
+        private String merchant;
+        private Date date;
+        private float amount;
+        
+        @ManyToOne(...)
+        @JoinColumn(...)
+        private AccountBook book;
+    }
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
+The testing focus will be primarily on the web layer, ensuring comprehensive coverage of the following areas:
+
+1. HTTP request parsing - the appropriate handlers are accessed and parameters are accurately parsed.
+2. Responses are properly formatted in compliance with HATEOAS principles.
+
+It's important to note that database operations, which are managed by JPA and devoid of customization logic, will not be included in the test coverage. Instead, Mokito will be utilized to mock all database queries. Additionally, security and authentication will be disabled during testing.
 
 ## Contributors
 
