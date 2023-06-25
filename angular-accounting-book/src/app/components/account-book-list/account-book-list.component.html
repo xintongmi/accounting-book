@@ -5,6 +5,7 @@
   <app-login-status class="login-status"></app-login-status>
 </mat-toolbar>
 <!-- END TOP TOOLBAR -->
+
 <div *ngIf="isLoading" class="spinner-container">
   <mat-spinner></mat-spinner>
 </div>
@@ -45,6 +46,7 @@
     </mat-card>
   </div>
 </div>
+
 <!-- DELETE COMFIRM DIALOG -->
 <ng-template #deleteConfirmDialog>
   <h3 matDialogTitle>Are you sure you want to permanently delete this book?</h3>
