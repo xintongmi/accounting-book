@@ -26,4 +26,3 @@ gradle-app.setting
 # gradle/wrapper/gradle-wrapper.properties
 
 *.pkg
-*.yaml
