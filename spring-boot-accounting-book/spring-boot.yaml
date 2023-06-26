@@ -14,9 +14,12 @@ spec:
       labels:
         app: spring-boot
     spec:
+      nodeSelector:
+        cloud.google.com/compute-class: Scale-Out
+        kubernetes.io/arch: arm64
       containers:
         - name: spring-boot
-          image: gcr.io/project-accounting-book/spring-boot-accounting-book:1.2
+          image: gcr.io/accounting-book-389103/spring-boot-accounting-book:1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
