@@ -8,19 +8,15 @@ This is a full-stack project aimed at tracking and analyzing home expenses
 
 ## Tech Stack
 
-- Frontend: Angular
-
-- Backend: Spring Boot and Gradle
-
-- Database: PostgreSQL
-
-- Frontend Testing: Jasmine
-
-- Backend Testing: JUnit 5
-
-- Deployment: Docker and Google Kubernetes Engine
-
-- Auth: OAuth 2.0
+[![Angular](https://img.shields.io/badge/Angular-DD0031.svg?style=for-the-badge&logo=Angular&logoColor=white)](https://angular.io/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=Spring-Boot&logoColor=white)](https://spring.io/)
+[![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=for-the-badge&logo=Gradle&logoColor=white)](https://gradle.org/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=for-the-badge&logo=PostgreSQL&logoColor=white)](https://www.postgresql.org/)
+[![Jasmine](https://img.shields.io/badge/Jasmine-8A4182.svg?style=for-the-badge&logo=Jasmine&logoColor=white)](https://jasmine.github.io/)
+[![JUnit5](https://img.shields.io/badge/JUnit5-25A162.svg?style=for-the-badge&logo=JUnit5&logoColor=white)](https://junit.org/junit5/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=Docker&logoColor=white)](https://www.docker.com/)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5.svg?style=for-the-badge&logo=Kubernetes&logoColor=white)](https://kubernetes.io/)
+[![Jenkins](https://img.shields.io/badge/Jenkins-D24939.svg?style=for-the-badge&logo=Jenkins&logoColor=white)](https://www.jenkins.io/)
 
 ## API Definition
 
