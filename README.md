@@ -35,7 +35,7 @@ This is a full-stack project aimed at tracking and analyzing home expenses
 |DELETE  |/api/accounts/{email}/books/{bookId}  |Delete a book (and its items) by {bookId}  |
 |DELETE  |/api/accounts/{email}/items/{itemId}  |Delete an item by {itemId}  |
 
-## Entities
+## Resources
 
 ### Account
 
